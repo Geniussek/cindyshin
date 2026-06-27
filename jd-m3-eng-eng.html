@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영영풀이 마스터</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  :root {
+    --bg: #D6EAF8;
+    --card: #FFFFFF;
+    --primary: #3A6BD4;
+    --primary-light: #EEF3FF;
+    --s1: #E74C3C; --s1l: #FDECEA;
+    --s2: #3498DB; --s2l: #EAF4FB;
+    --s3: #27AE60; --s3l: #E9F7EF;
+    --s4: #E67E22; --s4l: #FEF5E7;
+    --s5: #8E44AD; --s5l: #F5EEF8;
+    --success: #06D6A0;
+    --danger: #EF233C;
+    --text: #1B2A4A;
+    --muted: #7F8C9A;
+    --border: #C8D8E8;
+    --shadow: 0 4px 20px rgba(58,107,212,0.13);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    background: linear-gradient(160deg, #C9DFF5 0%, #D9EEE1 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ══════════════════════════════
+     HOME SCREEN
+  ══════════════════════════════ */
+  #homeScreen {
+    padding: 36px 20px 60px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .home-title {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .home-title h1 {
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+  }
+  .home-title p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 6px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  /* section label */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  /* lesson grid */
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 36px;
+  }
+  .lesson-btn {
+    background: var(--card);
+    border: 2.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 6px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all .18s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-family: inherit;
+  }
+  .lesson-btn .l-icon { font-size: 1.7rem; display: block; margin-bottom: 6px; }
+  .lesson-btn .l-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.3;
+  }
+  .lesson-btn.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(58,107,212,0.2);
+  }
+  .lesson-btn.selected .l-label { color: var(--primary); }
+
+  /* stage cards */
+  .stage-list { display: flex; flex-direction: column; gap: 12px; }
+  .stage-card {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    border: 2.5px solid transparent;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all .18s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    gap: 14px;
+    position: relative;
+  }
+  .stage-card .sc-icon { display: none; }
+  .stage-card .sc-label {
+    font-size: 1.05rem;
+    font-weight: 900;
+    font-family: 'Noto Sans KR', sans-serif;
+    flex: 1;
+  }
+  .stage-card .sc-badge {
+    padding: 5px 13px;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    order: -1;
+  }
+
+  .stage-card.s1 { border-color: var(--s1); } .stage-card.s1 .sc-badge { background: var(--s1); }
+  .stage-card.s2 { border-color: var(--s2); } .stage-card.s2 .sc-badge { background: var(--s2); }
+  .stage-card.s3 { border-color: var(--s3); } .stage-card.s3 .sc-badge { background: var(--s3); }
+  .stage-card.s4 { border-color: var(--s4); } .stage-card.s4 .sc-badge { background: var(--s4); }
+  .stage-card.s5 { border-color: var(--s5); } .stage-card.s5 .sc-badge { background: var(--s5); }
+
+  /* ══════════════════════════════
+     QUIZ SCREEN
+  ══════════════════════════════ */
+  #quizScreen { display: none; }
+
+  .quiz-header {
+    background: var(--card);
+    padding: 16px 20px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .quiz-header-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .btn-back {
+    background: var(--primary-light);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary);
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .quiz-header-info { flex: 1; }
+  .quiz-header-info .qi-stage {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .quiz-header-info .qi-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .score-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  /* progress */
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar-bg {
+    flex: 1;
+    background: #E8EDF5;
+    border-radius: 99px;
+    height: 7px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--primary), #4CC9F0);
+    transition: width .4s ease;
+  }
+  .progress-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+  /* quiz body */
+  .quiz-body { padding: 20px 16px 160px; max-width: 520px; margin: 0 auto; }
+
+  /* card */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .stage-title-tag {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+  .stage-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.5;
+  }
+
+  /* question */
+  .question-word {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 2단계 해석 토글 */
+  .kr-toggle {
+    margin-top: 10px;
+    border-top: 1px dashed var(--border);
+    padding-top: 10px;
+  }
+  .kr-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 0;
+    user-select: none;
+  }
+  .kr-toggle-btn:active { opacity: 0.6; }
+  .kr-hidden {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.85rem;
+    color: var(--primary);
+    margin-top: 6px;
+    display: none;
+    font-weight: 600;
+  }
+  .kr-hidden.show { display: block; }
+
+  .question-def {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 13px 15px;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin-bottom: 6px;
+  }
+  .question-def .kr {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .sentence-box {
+    font-size: 1rem;
+    line-height: 2.2;
+    margin-bottom: 6px;
+    color: var(--text);
+    padding: 4px 0 12px;
+  }
+  .blank {
+    display: inline-block;
+    width: 88px;
+    border-bottom: 2.5px solid var(--primary);
+    vertical-align: bottom;
+    margin: 0 2px;
+  }
+  .sent-kr {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-top: 4px;
+  }
+
+  /* options */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .opt-btn {
+    padding: 13px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: all .15s;
+    line-height: 1.5;
+  }
+  /* hover: 마우스 기기에서만 적용 — 모바일 sticky hover 방지 */
+  @media (hover: hover) {
+    .opt-btn:hover:not(:disabled)   { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .match-item:hover:not(.matched) { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .lesson-btn:hover    { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(58,107,212,.18); }
+    .stage-card:hover    { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+    .btn-next:hover      { background: #2d57b8; }
+  }
+  .opt-btn.correct { border-color: var(--success); background: #EDFAF5; color: #047857; }
+  .opt-btn.wrong   { border-color: var(--danger);  background: #FFF0F2; color: var(--danger); }
+  .opt-btn:disabled { cursor: default; }
+
+  /* match */
+  .match-col-title {
+    font-size: 0.72rem; font-weight: 800; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px; text-align: center; margin-bottom: 6px;
+  }
+  .match-item {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+    line-height: 1.4;
+    height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .match-item.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+  .match-item.matched  { border-color: var(--success); background: #EDFAF5; color: #047857; cursor: default; }
+  .match-item.wrong-flash { border-color: var(--danger); background: #FFF0F2; color: var(--danger); }
+
+  /* ── 하단 고정 바 (해설 + 다음버튼) ── */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%; max-width: 520px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.10);
+  }
+
+  /* 해설 칸 — 항상 고정 높이 유지 */
+  .feedback {
+    min-height: 56px;
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.55;
+    background: #F4F6FB;
+    color: transparent; /* 내용 없을 때 투명 */
+    border-left: 4px solid transparent;
+    transition: background .2s, color .2s, border-color .2s;
+    display: flex;
+    align-items: center;
+  }
+  .feedback.ok  { background: #EDFAF5; color: #047857; border-left-color: #06D6A0; }
+  .feedback.bad { background: #FFF0F2; color: var(--danger); border-left-color: var(--danger); }
+
+  /* 다음 버튼 */
+  .btn-next {
+    width: 100%;
+    padding: 18px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-next:disabled { background: #C8D8E8; color: var(--muted); cursor: default; }
+
+  /* result */
+  .result-card { text-align: center; padding: 32px 20px 24px; }
+  .result-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+  .result-score { font-size: 2.4rem; font-weight: 900; color: var(--primary); }
+  .result-pct   { font-size: 1rem; font-weight: 800; color: var(--primary); margin: 4px 0 6px; }
+  .result-msg   { font-size: 0.95rem; color: var(--muted); margin-bottom: 24px; font-family: 'Noto Sans KR', sans-serif; }
+  .result-btns  { display: flex; flex-direction: column; gap: 12px; }
+  .result-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Noto Sans KR', inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: left;
+    transition: opacity .15s;
+    width: 100%;
+  }
+  .result-action-btn:active { opacity: 0.75; }
+  .result-action-btn .rab-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .result-action-btn .rab-text { flex: 1; }
+  .result-action-btn .rab-text small {
+    display: block; font-size: 0.75rem; font-weight: 500; opacity: 0.75; margin-top: 2px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .btn-wrong  { background: #FFF0F2; color: #C0152A; border: 2px solid #EF233C; }
+  .btn-retry  { background: #EEF3FF; color: #2d57b8; border: 2px solid var(--primary); }
+  .btn-home   { background: #F0F4F0; color: #2d6a4f; border: 2px solid #27AE60; }
+  .btn-wrong.disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* STEP 6 */
+  .stage-card.s6 { border-color: #0077B6; }
+  .stage-card.s6 .sc-badge { background: #0077B6; }
+
+  .s6-box {
+    background: #F0F7FF;
+    border: 2px solid #0077B6;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .s6-box-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #0077B6;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .s6-def-item {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    padding-left: 14px;
+    position: relative;
+    color: var(--text);
+  }
+  .s6-def-item::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #0077B6;
+    font-weight: 800;
+  }
+  .s6-def-kr {
+    display: none;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .s6-def-kr.show { display: block; }
+  .s6-kr-btn {
+    background: none;
+    border: none;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 2px 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .s6-kr-btn:active { opacity: 0.6; }
+  .s6-opt-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: all .15s;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .s6-opt-btn .opt-num {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #0077B6;
+    background: #E0F0FF;
+    border-radius: 6px;
+    padding: 2px 7px;
+    flex-shrink: 0;
+  }
+  .s6-opt-btn .opt-words { flex: 1; line-height: 1.5; }
+  @media (hover: hover) {
+    .s6-opt-btn:hover:not(:disabled) { border-color: #0077B6; background: #E8F4FF; color: #0077B6; }
+  }
+  .s6-opt-btn.correct { border-color: var(--success); background: #EDFAF5; color: #047857; }
+  .s6-opt-btn.wrong   { border-color: var(--danger);  background: #FFF0F2; color: var(--danger); }
+  .s6-opt-btn:disabled { cursor: default; }
+
+  /* 정오답 오버레이 */
+  .result-overlay {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .result-overlay.show { opacity: 0.2; }
+  .result-overlay.hide { opacity: 0; transition: opacity 0.4s ease; }
+  .result-overlay.correct-circle {
+    background: transparent;
+    border: 28px solid #06D6A0;
+    border-radius: 50%;
+  }
+  .result-overlay.wrong-x {
+    background: transparent;
+    border-radius: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .result-overlay.wrong-x::before,
+  .result-overlay.wrong-x::after {
+    content: '';
+    position: absolute;
+    width: 220px; height: 28px;
+    background: #EF233C;
+    border-radius: 14px;
+  }
+  .result-overlay.wrong-x::before { transform: rotate(45deg); }
+  .result-overlay.wrong-x::after  { transform: rotate(-45deg); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     HOME SCREEN
+══════════════════════════════ -->
+<div id="homeScreen">
+  <div class="home-title">
+    <h1>📖 영영풀이 마스터</h1>
+    <p>중2 · 동아 이병민</p>
+  </div>
+
+  <div class="section-label">📦 단어 세트 고르기</div>
+  <div class="lesson-grid">
+    <button class="lesson-btn selected" onclick="selectLesson(0, this)">
+      <span class="l-icon">🌱</span>
+      <span class="l-label">&lt;중3&gt; Lesson 3</span>
+    </button>
+    <button class="lesson-btn" onclick="selectLesson(1, this)">
+      <span class="l-icon">🌍</span>
+      <span class="l-label">&lt;중3&gt; Lesson 4</span>
+    </button>
+    <button class="lesson-btn" onclick="selectLesson(2, this)">
+      <span class="l-icon">💡</span>
+      <span class="l-label">&lt;중2&gt; Lesson 3</span>
+    </button>
+    <button class="lesson-btn" onclick="selectLesson(3, this)">
+      <span class="l-icon">🎯</span>
+      <span class="l-label">&lt;중2&gt; Lesson 4</span>
+    </button>
+  </div>
+
+  <div class="section-label">📚 학습 단계 고르기</div>
+  <div class="stage-list">
+    <div class="stage-card s1" onclick="startQuiz(0)">
+      <span class="sc-icon">🔤</span>
+      <span class="sc-label">한글 뜻 맞추기</span>
+      <span class="sc-badge">STEP 1</span>
+    </div>
+    <div class="stage-card s2" onclick="startQuiz(1)">
+      <span class="sc-icon">📘</span>
+      <span class="sc-label">영영풀이 보고 단어 찾기</span>
+      <span class="sc-badge">STEP 2</span>
+    </div>
+    <div class="stage-card s3" onclick="startQuiz(2)">
+      <span class="sc-icon">🔗</span>
+      <span class="sc-label">단어 & 영영풀이 짝 맞추기</span>
+      <span class="sc-badge">STEP 3</span>
+    </div>
+    <div class="stage-card s4" onclick="startQuiz(3)">
+      <span class="sc-icon">✏️</span>
+      <span class="sc-label">예문 빈칸 채우기</span>
+      <span class="sc-badge">STEP 4</span>
+    </div>
+    <div class="stage-card s5" onclick="startQuiz(4)">
+      <span class="sc-icon">🏆</span>
+      <span class="sc-label">영영풀이 골라 빈칸 채우기</span>
+      <span class="sc-badge">STEP 5</span>
+    </div>
+    <div class="stage-card s6" onclick="startQuiz(5)">
+      <span class="sc-icon">📝</span>
+      <span class="sc-label">실전문제 (영영풀이 → 단어 세트)</span>
+      <span class="sc-badge">STEP 6</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     QUIZ SCREEN
+══════════════════════════════ -->
+<div id="quizScreen">
+  <div class="quiz-header">
+    <div class="quiz-header-top">
+      <button class="btn-back" onclick="goHome()">← 홈</button>
+      <div class="quiz-header-info">
+        <div class="qi-stage" id="qiStage">STEP 1</div>
+        <div class="qi-title" id="qiTitle">한글 뜻 맞추기</div>
+      </div>
+      <div class="score-badge" id="scoreBadge">⭐ 0점</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">1 / 8</div>
+    </div>
+  </div>
+
+  <div class="quiz-body" id="quizBody"></div>
+
+  <div class="result-overlay" id="resultOverlay"></div>
+  <div class="bottom-bar">
+    <div class="feedback" id="globalFb"></div>
+    <button class="btn-next" id="btnNext" disabled onclick="nextQuestion()">다음 문제 →</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA — 레슨별 단어 세트
+// ══════════════════════════════════════════
+const lessonData = [
+  // <중3> Lesson 3 - 동아(이병민) Plants That Feed Us
+  [
+    { word:"absorb",         kr:"흡수하다, 받아들이다",    def:"to take in a liquid, gas, or other substance from the surface or space around",                                              defKr:"주변 표면이나 공간에서 액체, 기체 또는 다른 물질을 흡수하다",                           sentence:"Plant roots _____ water and nutrients from the soil.", sentenceKr:"식물의 뿌리는 토양으로부터 물과 영양분을 흡수한다." },
+    { word:"article",        kr:"(신문·잡지의) 기사",     def:"a piece of writing included with others in a newspaper, magazine, or other publication",               defKr:"신문, 잡지 또는 다른 인쇄물에 다른 글들과 함께 실린 글",                  sentence:"I read an interesting _____ about spinach in a science magazine.", sentenceKr:"나는 과학 잡지에서 시금치에 관한 흥미로운 기사를 읽었다." },
+    { word:"bomb",           kr:"폭탄",                   def:"a device which explodes and damages or destroys a large area",                           defKr:"폭발하여 넓은 지역을 손상시키거나 파괴하는 장치",            sentence:"The old building was destroyed by a _____ during the war.", sentenceKr:"그 오래된 건물은 전쟁 중에 폭탄으로 파괴되었다." },
+    { word:"capital",        kr:"수도",                   def:"the most important city or town of a country or region",                          defKr:"한 나라나 지역에서 가장 중요한 도시",                             sentence:"Seoul is the _____ of South Korea.", sentenceKr:"서울은 대한민국의 수도이다." },
+    { word:"characteristic", kr:"특성, 특징",              def:"a feature or quality belonging typically to a person, place, or thing",                               defKr:"보통 사람, 장소, 또는 사물에 속하는 특징이나 속성",              sentence:"One _____ of spinach is its dark green color.", sentenceKr:"시금치의 한 가지 특성은 짙은 초록색이다." },
+    { word:"consider",       kr:"여기다, 생각하다",        def:"to think carefully about something, typically before making a decision",                         defKr:"보통 결정을 내리기 전에 무언가에 대해 신중하게 생각하다",        sentence:"Many people _____ spinach one of the healthiest vegetables.", sentenceKr:"많은 사람들은 시금치를 가장 건강한 채소 중 하나로 여긴다." },
+    { word:"contain",        kr:"함유하다, 들어 있다",     def:"to have something inside or include something as a part",                               defKr:"안에 무언가를 가지고 있거나 일부로 포함하다",                sentence:"Spinach _____s a lot of iron and vitamins.", sentenceKr:"시금치는 많은 철분과 비타민을 함유하고 있다." },
+    { word:"crush",          kr:"으깨다, 으스러뜨리다",   def:"to press or squeeze something so hard that it is damaged or loses its shape",       defKr:"무언가가 손상되거나 모양을 잃을 만큼 세게 누르거나 짜다",      sentence:"She _____ed the garlic before adding it to the pan.", sentenceKr:"그녀는 마늘을 팬에 넣기 전에 으깼다." },
+    { word:"defeat",         kr:"물리치다, 패배시키다",    def:"to win a victory over someone in a battle, game, or contest",                               defKr:"전투, 게임, 또는 경쟁에서 누군가에게 승리를 거두다",                 sentence:"Eating well can help your body _____ illness.", sentenceKr:"잘 먹는 것은 몸이 질병을 물리치는 데 도움이 된다." },
+    { word:"government",     kr:"정부",                   def:"the group of people who officially control a country",                                  defKr:"공식적으로 나라를 통제하는 사람들의 집단",                   sentence:"The _____ promoted eating more vegetables for public health.", sentenceKr:"정부는 공중 보건을 위해 채소를 더 많이 먹도록 장려했다." },
+    { word:"hide",           kr:"숨기다, 감추다",         def:"to put or keep something out of sight", defKr:"무언가를 시야 밖에 두거나 유지하다", sentence:"Some plants _____ their nutrients deep inside their leaves.", sentenceKr:"일부 식물들은 영양소를 잎 깊숙이 숨겨 놓는다." },
+    { word:"improve",        kr:"개선하다, 향상시키다",    def:"to make or become better than before",                                                              defKr:"이전보다 더 좋게 만들거나 되다",                                    sentence:"Eating spinach can _____ your eyesight.", sentenceKr:"시금치를 먹으면 시력이 향상될 수 있다." },
+    { word:"nutrient",       kr:"영양분, 영양소",          def:"a substance that provides nourishment essential for growth and the maintenance of life",                   defKr:"성장과 생명 유지에 필수적인 영양을 공급하는 물질",              sentence:"Spinach is full of _____s that are good for your body.", sentenceKr:"시금치는 몸에 좋은 영양소가 가득하다." },
+    { word:"pilot",          kr:"조종사, 비행사",          def:"a person who flies an airplane, helicopter, etc.",                                     defKr:"비행기, 헬리콥터 등을 조종하는 사람",                        sentence:"The _____ needed good vision to fly the plane safely.", sentenceKr:"조종사는 비행기를 안전하게 조종하기 위해 좋은 시력이 필요했다." },
+    { word:"poisonous",      kr:"독성이 있는, 유독한",     def:"containing or producing a substance that can cause death or illness if taken into the body",                                                 defKr:"몸속에 들어갔을 때 죽음이나 질병을 유발할 수 있는 물질을 함유하거나 생산하는",                      sentence:"Some mushrooms are _____ and should never be eaten.", sentenceKr:"어떤 버섯들은 독성이 있어 절대 먹어서는 안 된다." },
+    { word:"researcher",     kr:"연구원",                  def:"someone who studies a subject, especially in order to discover new information",       defKr:"특히 새로운 정보를 발견하기 위해 주제를 연구하는 사람",      sentence:"A _____ found that spinach helps pilots see better at night.", sentenceKr:"한 연구원은 시금치가 조종사들이 밤에 더 잘 볼 수 있게 돕는다는 것을 발견했다." },
+    { word:"spinach",        kr:"시금치",                  def:"a vegetable with large dark green leaves",                                              defKr:"크고 짙은 녹색 잎을 가진 채소",                             sentence:"Popeye became strong by eating _____.", sentenceKr:"뽀빠이는 시금치를 먹어 강해졌다." },
+    { word:"statue",         kr:"조각상",                  def:"a figure of a person or animal that is made from stone, metal, or wood",          defKr:"돌, 금속, 또는 나무로 만든 사람이나 동물의 형체",                  sentence:"There is a famous _____ of a sailor holding spinach in the park.", sentenceKr:"공원에 시금치를 들고 있는 선원의 유명한 조각상이 있다." },
+    { word:"trace",          kr:"흔적, 자취",              def:"a sign that shows someone or something was present",                                         defKr:"누군가나 무언가가 있었음을 보여주는 흔적",                        sentence:"Scientists found _____s of iron in the ancient plant fossils.", sentenceKr:"과학자들은 고대 식물 화석에서 철분의 흔적을 발견했다." },
+    { word:"vision",         kr:"시력",                    def:"the ability to see",                                                                    defKr:"볼 수 있는 능력",                                            sentence:"Eating carrots and spinach is good for your _____.", sentenceKr:"당근과 시금치를 먹는 것은 시력에 좋다." }
+  ],
+  // <중3> Lesson 4 - 동아(이병민) Our Intangible Heritage
+  [
+    { word:"attend",       kr:"참석하다, 출석하다",      def:"to go to and be present at an event, meeting, or school",                                                          defKr:"행사, 회의, 또는 학교에 가서 참석하다",                                    sentence:"I once _____ ed an overseas exhibition with a couple of haenyeo to give a talk about their lives.", sentenceKr:"나는 언젠가 해녀 몇 명과 함께 해외 전시회에 참석하여 그들의 삶에 대해 이야기했다." },
+    { word:"audience",     kr:"청중, 관중",               def:"the group of people who have gathered to watch or listen to something",                                    defKr:"무언가를 보거나 듣기 위해 모인 사람들의 집단",                    sentence:"Everyone in the _____ was deeply moved.", sentenceKr:"관중 모두가 깊이 감동을 받았다." },
+    { word:"breadwinner",  kr:"생계를 버는 사람, 가장",   def:"a person who earns money to support a family",                                                      defKr:"가족을 부양하기 위해 돈을 버는 사람",                             sentence:"Many haenyeo have become the _____s for their families.", sentenceKr:"많은 해녀들은 가족의 생계를 버는 사람이 되었다." },
+    { word:"breathing",    kr:"호흡",                    def:"the action of taking air into the lungs and sending it out again",                                        defKr:"폐로 공기를 들이마시고 다시 내보내는 행위",                       sentence:"Haenyeo are Korean female divers who harvest seafood without any _____ devices.", sentenceKr:"해녀는 어떤 호흡 장치도 없이 해산물을 채취하는 한국 여성 잠수부들이다." },
+    { word:"community",    kr:"공동체, 지역 사회",         def:"a group of people living in the same place or having a particular characteristic in common",                                    defKr:"같은 장소에 살거나 공통된 특성을 가진 사람들의 집단",                  sentence:"It's a kind of _____ band music.", sentenceKr:"그것은 공동체 악단 음악의 한 종류야." },
+    { word:"experience",   kr:"경험",                    def:"something that happens to you, or a situation that you are involved in",                                  defKr:"당신에게 일어나는 일이나 당신이 관여하는 상황",                   sentence:"Zin Kim was interviewed about her _____ of taking pictures of haenyeo.", sentenceKr:"Zin Kim은 해녀 사진을 찍은 경험에 대해 인터뷰를 받았다." },
+    { word:"form",         kr:"구성하다",                def:"to establish an organization, committee, government, etc.",                                               defKr:"조직, 위원회, 정부 등을 설립하다",                                sentence:"Haenyeo _____ their own communities and help each other.", sentenceKr:"해녀들은 자신들만의 공동체를 구성하고 서로 돕는다." },
+    { word:"heritage",     kr:"유산",                    def:"the art, buildings, traditions, and beliefs that a society considers important to its history and culture", defKr:"사회가 역사와 문화에 중요하다고 여기는 예술, 건물, 전통, 믿음",   sentence:"Their culture made UNESCO's Intangible Cultural _____ list in 2016.", sentenceKr:"그들의 문화는 2016년 유네스코 무형 문화 유산 목록에 올랐다." },
+    { word:"intangible",   kr:"무형의",                  def:"not able to be touched or measured, and difficult to describe or explain",                                defKr:"만지거나 측정할 수 없고 묘사하거나 설명하기 어려운",              sentence:"Their culture made UNESCO's _____ Cultural Heritage list in 2016.", sentenceKr:"그들의 문화는 2016년 유네스코 무형 문화 유산 목록에 올랐다." },
+    { word:"laugh",        kr:"웃다",                    def:"to make the noise with your voice that shows you think something is funny",                               defKr:"무언가가 재미있다고 생각한다는 것을 보여주는 소리를 내다",        sentence:"She kept _____ing even after she had been in the water for over five hours.", sentenceKr:"그녀는 물속에 다섯 시간 넘게 있은 후에도 계속 웃었다." },
+    { word:"moment",       kr:"순간, 때",                def:"a particular point in time",                                                                              defKr:"시간의 특정한 지점",                                              sentence:"I can never forget that _____, so I'll continue to take pictures of haenyeo.", sentenceKr:"나는 그 순간을 절대 잊을 수 없어서, 계속 해녀 사진을 찍을 것이다." },
+    { word:"once",         kr:"언젠가",                  def:"at some time in the past, but not now",                                                                   defKr:"현재는 아니지만 과거 어느 시점에",                                sentence:"I _____ attended an overseas exhibition with a couple of haenyeo.", sentenceKr:"나는 언젠가 해녀 몇 명과 함께 해외 전시회에 참석했다." },
+    { word:"open up",      kr:"마음을 터놓다",            def:"to talk more about your personal feelings and experiences",                                               defKr:"자신의 감정과 경험에 대해 더 많이 이야기하다",                    sentence:"They _____ to me then.", sentenceKr:"그들은 그때 나에게 마음을 터놓았다." },
+    { word:"promote",      kr:"홍보하다",                def:"to encourage something to happen or develop; or to advertise a product or event so that people will buy it or support it",                                                                                  defKr:"무언가가 일어나거나 발전하도록 장려하다; 또는 사람들이 구매하거나 지지하도록 제품이나 행사를 홍보하다",                                               sentence:"For the past several years, Zin Kim has _____ d the culture of Jeju haenyeo worldwide.", sentenceKr:"지난 몇 년간 Zin Kim은 제주 해녀 문화를 전 세계에 홍보해 왔다." },
+    { word:"realize",      kr:"깨닫다, 인식하다",         def:"to understand or become aware of something",                                                              defKr:"무언가를 이해하거나 알게 되다",                                   sentence:"I _____ d then that I should take pictures of haenyeo.", sentenceKr:"나는 그때 해녀 사진을 찍어야 한다는 것을 깨달았다." },
+    { word:"suitable",     kr:"적합한, 적절한",           def:"having the qualities that are right, needed, or appropriate for something",                                                    defKr:"무언가에 맞거나 필요하거나 적절한 자질을 가진",                               sentence:"Jejudo is not _____ for farming, so many haenyeo have become the breadwinners.", sentenceKr:"제주도는 농사에 적합하지 않아서 많은 해녀들이 가장이 되었다." },
+    { word:"symbol",       kr:"상징",                    def:"a picture or shape that has a particular meaning or represents a particular organization or idea",        defKr:"특정 의미를 가지거나 특정 조직이나 아이디어를 나타내는 그림이나 형태", sentence:"Haenyeo are a _____ of strong women.", sentenceKr:"해녀들은 강한 여성의 상징이다." },
+    { word:"tightly",      kr:"꽉, 단단히",              def:"very firmly or closely",                                                                                  defKr:"매우 단단하게 또는 가깝게",                                       sentence:"One of the haenyeo held my hand _____.", sentenceKr:"해녀 중 한 명이 내 손을 꽉 잡았다." },
+    { word:"train",        kr:"훈련시키다",               def:"to teach someone to do a particular job or activity",                                                     defKr:"누군가에게 특정 일이나 활동을 하도록 가르치다",                   sentence:"More-experienced haenyeo _____ less-experienced haenyeo.", sentenceKr:"더 경험 많은 해녀들이 덜 경험된 해녀들을 훈련시킨다." },
+    { word:"wetsuit",      kr:"잠수복",                  def:"a suit made of rubber that people wear for water sports such as diving and surfing",                      defKr:"다이빙과 서핑 같은 수상 스포츠를 위해 사람들이 입는 고무로 만든 옷", sentence:"They didn't think they looked pretty in their _____s.", sentenceKr:"그들은 잠수복을 입은 자신들의 모습이 예쁘지 않다고 생각했다." },
+    { word:"adventurous",  kr:"모험적인, 대담한",        def:"not afraid to do new and dangerous or exciting things",                                     defKr:"새롭고 위험하거나 흥미로운 것을 하는 것을 두려워하지 않는",   sentence:"Haenyeo are _____ women who dive deep into the ocean every day.", sentenceKr:"해녀들은 매일 깊은 바다에 뛰어드는 모험적인 여성들이다." },
+    { word:"exhibition",    kr:"전시회",                  def:"a public event where a collection of things is shown to the public",                          defKr:"사물들의 모음이 대중에게 보여지는 공개 행사",                  sentence:"Zin Kim held an _____ of haenyeo photographs in Paris.", sentenceKr:"Zin Kim은 파리에서 해녀 사진 전시회를 열었다." },
+    { word:"explain",       kr:"설명하다",                def:"to make something clear or easy to understand",                                                defKr:"무언가를 명확하거나 이해하기 쉽게 만들다",                     sentence:"She tried to _____ the haenyeo culture to foreign visitors.", sentenceKr:"그녀는 외국 방문객들에게 해녀 문화를 설명하려고 했다." },
+    { word:"marine",        kr:"바다의, 해양의",           def:"of or relating to the sea or the plants and animals that live in the sea",                   defKr:"바다나 바다에 사는 식물과 동물에 관한",                         sentence:"Haenyeo protect the _____ environment by not catching too much seafood.", sentenceKr:"해녀들은 해산물을 너무 많이 잡지 않음으로써 해양 환경을 보호한다." },
+    { word:"mistake",       kr:"실수, 오류",               def:"something that is not correct; a wrong action, statement, or judgment",                       defKr:"올바르지 않은 것; 잘못된 행동, 진술, 또는 판단",               sentence:"Don't be afraid of making a _____ when you try something new.", sentenceKr:"새로운 것을 시도할 때 실수하는 것을 두려워하지 마세요." },
+    { word:"photographer",  kr:"사진작가, 사진사",          def:"a person who takes photographs especially as a job",                                          defKr:"특히 직업으로 사진을 찍는 사람",                               sentence:"The underwater _____ spent years documenting haenyeo culture.", sentenceKr:"그 수중 사진작가는 해녀 문화를 기록하는 데 수년을 보냈다." },
+    { word:"worldwide",     kr:"전 세계적으로, 전 세계의",  def:"existing, happening, or moving throughout the whole world",                                   defKr:"전 세계에 걸쳐 존재하거나 일어나거나 움직이는",                sentence:"Haenyeo culture is now known _____ thanks to photographers like Zin Kim.", sentenceKr:"해녀 문화는 이제 Zin Kim 같은 사진작가들 덕분에 전 세계적으로 알려져 있다." }
+  ],
+// Lesson 3 - 동아 이병민 (Can You Spot Them?)
+  [
+    { word:"ability",      kr:"능력",                def:"the power or skill to do something well",                                        defKr:"무언가를 잘할 수 있는 힘이나 기술",                     sentence:"Their special looks or _____s keep them safe from predators.", sentenceKr:"그들의 특별한 생김새나 능력은 포식자들로부터 그들을 안전하게 지켜 준다." },
+    { word:"advantage",    kr:"유리한 점, 이점",      def:"something that makes you better or more successful than others",                  defKr:"다른 것들보다 더 낫거나 성공적이게 해주는 것",           sentence:"Camouflage gives animals an _____ over their predators.", sentenceKr:"위장은 동물들에게 포식자들에 대한 유리한 점을 준다." },
+    { word:"block",        kr:"막다",                 def:"to stop something from passing or moving",                                       defKr:"무언가가 지나가거나 움직이는 것을 막다",                 sentence:"The dark cloud _____s the view of predators.", sentenceKr:"먹구름은 포식 동물의 시야를 가린다." },
+    { word:"camouflage",   kr:"위장",                 def:"a way of hiding by looking the same as the things around you",                   defKr:"주변의 것들과 같아 보임으로써 숨는 방법",                sentence:"Some animals are very good at _____.", sentenceKr:"야생에 사는 어떤 동물들은 위장을 매우 잘한다." },
+    { word:"danger",       kr:"위험",                 def:"the possibility of being hurt or harmed",                                        defKr:"다치거나 해를 입을 가능성",                              sentence:"When octopuses feel _____, they use their special camouflage skill.", sentenceKr:"문어들은 위험을 느낄 때, 자신들의 특별한 위장 기술을 사용한다." },
+    { word:"environment",  kr:"자연 환경",             def:"the natural world around us, including the air, water, and land",                defKr:"공기, 물, 땅을 포함한 우리 주변의 자연 세계",            sentence:"The colors of their feathers match their natural _____.", sentenceKr:"그들의 깃털 색은 그들의 자연환경과 어울린다." },
+    { word:"escape",       kr:"탈출하다",              def:"to get away from a place or situation",                                          defKr:"어떤 장소나 상황에서 벗어나다",                          sentence:"Mountain hares can hop in deep snow and _____ from predators.", sentenceKr:"산토끼들은 깊은 눈 속에서 껑충껑충 뛰어 포식자들로부터 탈출할 수 있다." },
+    { word:"fool",         kr:"속이다",               def:"to make someone believe something that is not true",                             defKr:"누군가가 사실이 아닌 것을 믿게 만들다",                  sentence:"This can _____ predators completely.", sentenceKr:"이것은 포식 동물을 완전히 속일 수 있다." },
+    { word:"invisible",    kr:"보이지 않는",            def:"impossible to see or notice",                                                   defKr:"보거나 알아차릴 수 없는",                                sentence:"Changing colors makes them nearly _____ to predators.", sentenceKr:"색을 바꾸는 것은 포식자들에게 그것들을 거의 보이지 않게 만든다." },
+    { word:"match",        kr:"어울리다; 일치하다",     def:"to be the same as something else in color, size, or shape",                     defKr:"색, 크기, 또는 모양이 다른 것과 같다",                   sentence:"In summer, they turn gray-brown to _____ the rocks and grass.", sentenceKr:"여름에 그것들은 바위와 풀에 어울리게 회갈색으로 변한다." },
+    { word:"pattern",      kr:"무늬",                 def:"a design of lines, shapes, or colors that is repeated",                         defKr:"반복되는 선, 모양, 또는 색의 디자인",                    sentence:"Octopuses can change colors and _____s to match their surroundings.", sentenceKr:"문어들은 주변 환경에 맞추어 색과 무늬를 바꿀 수 있다." },
+    { word:"predator",     kr:"포식자, 포식 동물",     def:"an animal that hunts and eats other animals",                                   defKr:"다른 동물을 사냥하고 먹는 동물",                         sentence:"Changing colors makes them nearly invisible to _____s like wild dogs.", sentenceKr:"색을 바꾸는 것은 야생 개 같은 포식자들에게 그것들을 거의 보이지 않게 만든다." },
+    { word:"protect",      kr:"보호하다",              def:"to keep someone or something safe from danger",                                  defKr:"누군가나 무언가를 위험으로부터 안전하게 지키다",          sentence:"The special feathers of owls _____ them from predators.", sentenceKr:"부엉이의 특별한 깃털은 그들을 포식 동물로부터 보호한다." },
+    { word:"scan",         kr:"살피다; 훑어보다",       def:"to look at something carefully, or look over quickly to find something",        defKr:"무언가를 주의 깊게 보거나 빠르게 훑어보다",              sentence:"Owls _____ the forest carefully to find prey.", sentenceKr:"부엉이는 먹이를 찾기 위해 숲을 주의 깊게 살핀다." },
+    { word:"social",       kr:"사회적인",              def:"living or doing things together with others",                                   defKr:"다른 것들과 함께 살거나 행동하는",                       sentence:"Meerkats are _____ animals that live in groups.", sentenceKr:"미어캣은 무리를 지어 사는 사회적 동물이다." },
+    { word:"spot",         kr:"발견하다",              def:"to see or notice something",                                                     defKr:"무언가를 보거나 알아차리다",                              sentence:"Can you _____ the animal hiding in this photo?", sentenceKr:"이 사진에서 숨어 있는 동물을 발견할 수 있나요?" },
+    { word:"spread",       kr:"퍼뜨리다",              def:"to make something cover a larger and larger area",                              defKr:"무언가가 점점 더 넓은 범위를 덮게 만들다",               sentence:"Octopuses can _____ ink to escape from danger.", sentenceKr:"문어는 위험으로부터 탈출하기 위해 먹물을 퍼뜨릴 수 있다." },
+    { word:"surroundings", kr:"주변 환경",             def:"the things and places around someone or something",                             defKr:"누군가나 무언가의 주위에 있는 것들과 장소들",             sentence:"Octopuses change colors to match their _____.", sentenceKr:"문어들은 주변 환경에 맞추어 색을 바꾼다." },
+    { word:"survive",      kr:"살아남다",              def:"to stay alive in a difficult or dangerous situation",                           defKr:"어렵거나 위험한 상황에서 살아남다",                       sentence:"Animals use camouflage to _____ in the wild.", sentenceKr:"동물들은 야생에서 살아남기 위해 위장을 사용한다." },
+    { word:"traditional",  kr:"전통의",               def:"coming from long ago and still used or done today",                             defKr:"오래전부터 전해져 오늘날에도 사용되거나 행해지는",         sentence:"_____ patterns on clothes can show the culture of a country.", sentenceKr:"옷의 전통적인 무늬는 나라의 문화를 보여줄 수 있다." }
+  ],
+  // Lesson 4 - 동아 이병민 (New Places and Friends)
+  [
+    { word:"delicious",      kr:"맛있는",              def:"having a very pleasant taste",                                                    defKr:"매우 맛있는",                                            sentence:"The pasta she made was _____.", sentenceKr:"그녀가 만든 파스타는 매우 맛있었다." },
+    { word:"dish",           kr:"요리",                def:"a particular kind of food that is prepared and cooked",                           defKr:"준비하고 조리한 특정 종류의 음식",                       sentence:"This is a traditional _____ from Korea.", sentenceKr:"이것은 한국의 전통 요리이다." },
+    { word:"excited",        kr:"신이 난",             def:"happy and full of energy about something",                                        defKr:"무언가에 대해 행복하고 에너지가 넘치는",                sentence:"When I met my friend Amelia at the airport, I was so _____.", sentenceKr:"공항에서 친구 Amelia를 만났을 때, 나는 매우 신이 났다." },
+    { word:"experience",     kr:"경험",                def:"the process of doing and seeing things and of having things happen to you",        defKr:"무언가를 하고 보고 일어나는 과정",                       sentence:"Zin Kim was interviewed about her _____ of taking pictures of haenyeo.", sentenceKr:"Zin Kim은 해녀 사진을 찍은 경험에 대해 인터뷰를 받았다." },
+    { word:"film",           kr:"촬영하다",            def:"to record moving pictures with a camera, usually for television or the cinema",   defKr:"카메라로 영상을 녹화하다",                               sentence:"The Harry Potter movies were _____ed at this station.", sentenceKr:"해리 포터 영화들은 이 역에서 촬영되었다." },
+    { word:"flight",         kr:"비행",                def:"a trip made by air, especially in a plane",                                       defKr:"특히 비행기를 타고 하는 공중 여행",                      sentence:"The _____ took 15 hours from Incheon.", sentenceKr:"비행은 인천에서부터 15시간이 걸렸다." },
+    { word:"market",         kr:"시장",                def:"a place where people buy and sell things",                                        defKr:"사람들이 물건을 사고 파는 장소",                         sentence:"Next, we went to Camden _____.", sentenceKr:"다음으로, 우리는 캠던 마켓에 갔다." },
+    { word:"meal",           kr:"식사",                def:"food eaten at one time, like breakfast, lunch, or dinner",                        defKr:"아침, 점심, 저녁처럼 한 번에 먹는 음식",                sentence:"After a yummy British _____, we walked around the market.", sentenceKr:"맛있는 영국 식사를 먹은 후, 우리는 시장을 돌아다녔다." },
+    { word:"plan",           kr:"계획하다",            def:"to decide or think about something before you do it",                             defKr:"무언가를 하기 전에 결정하거나 생각하다",                 sentence:"Let's _____ our trip to the museum together.", sentenceKr:"함께 박물관 여행을 계획하자." },
+    { word:"pretend",        kr:"~인 척하다",          def:"to imagine and act out a particular role or situation",                           defKr:"특정 역할이나 상황을 상상하고 행동하다",                 sentence:"Amelia and I _____ ed we were in the movies.", sentenceKr:"Amelia와 나는 영화 속에 나오는 척했다." },
+    { word:"secret",         kr:"비밀의",              def:"kept hidden from others; known to only a few people",                             defKr:"다른 사람들에게 숨겨진; 소수만 아는",                   sentence:"Can you find the _____ way to Hogwarts?", sentenceKr:"너는 호그와트로 가는 비밀 통로를 찾을 수 있니?" },
+    { word:"selfie",         kr:"셀카",                def:"a photo that you take of yourself, usually with a smartphone",                    defKr:"주로 스마트폰으로 자신을 찍는 사진",                    sentence:"We took lots of _____s at the station.", sentenceKr:"우리는 역에서 많은 셀카를 찍었다." },
+    { word:"sign",           kr:"표지판",              def:"a board or mark with information or warnings",                                    defKr:"정보나 경고가 담긴 판이나 표시",                         sentence:"Go that way and follow the _____ for the train.", sentenceKr:"저쪽으로 가서 기차 표지판을 따라가세요." },
+    { word:"statue",         kr:"조각상",              def:"a figure of a person or animal that is made from stone, metal, or wood",         defKr:"돌, 금속, 또는 나무로 만든 사람이나 동물의 형체",             sentence:"The guards stood still like _____s!", sentenceKr:"경비원들은 조각상처럼 꼼짝도 하지 않았다!" },
+    { word:"strange",        kr:"이상한, 낯선",         def:"different from what is usual, normal, or expected",                               defKr:"평소, 정상, 예상과 다른",                                sentence:"I thought, 'How _____! Fish and potato chips together?'", sentenceKr:"나는 생각했다. '이상하네! 생선과 감자칩이 함께?'" },
+    { word:"surprised",      kr:"놀란",                def:"feeling shocked by something you didn't think would happen",                      defKr:"일어날 것이라고 생각하지 못한 것에 충격을 받은",         sentence:"I was _____ to hear that.", sentenceKr:"나는 그 말을 듣고 놀랐다." },
+    { word:"traffic",        kr:"교통, 교통량",         def:"all the vehicles driving along a certain road or in a certain area",              defKr:"특정 도로나 지역을 달리는 모든 차량",                   sentence:"At this time of day, there's a lot of _____ around the airport.", sentenceKr:"하루 중 이 시간에는 공항 주변에 교통량이 많다." },
+    { word:"transportation", kr:"교통수단, 운송",       def:"the way people or things move from one place to another, like cars or trains",    defKr:"자동차나 기차처럼 사람이나 물건이 이동하는 방법",        sentence:"Public _____ in this city is very convenient.", sentenceKr:"이 도시의 대중교통은 매우 편리하다." },
+    { word:"try",            kr:"시도해 보다",          def:"to do something to see if it works",                                              defKr:"무언가가 되는지 보기 위해 해보다",                       sentence:"Amelia told me to _____ the fish and chips.", sentenceKr:"Amelia는 나에게 피시앤칩스를 먹어 보라고 말했다." },
+    { word:"underground",    kr:"지하에서, 지하의",     def:"under or beneath the surface of the ground",                                     defKr:"지면의 아래나 밑에",                                     sentence:"Traveling _____ in London is fast and easy.", sentenceKr:"런던에서 지하로 여행하는 것은 빠르고 쉽다." }
+  ]
+];
+
+const stageInfo = [
+  { title:"한글 뜻 맞추기",          step:"STEP 1" },
+  { title:"영영풀이 보고 단어 찾기",  step:"STEP 2" },
+  { title:"단어 & 영영풀이 짝 맞추기",step:"STEP 3" },
+  { title:"예문 빈칸 채우기",         step:"STEP 4" },
+  { title:"영영풀이 골라 빈칸 채우기",step:"STEP 5" },
+  { title:"실전문제 · 영영풀이 → 단어 세트",step:"STEP 6" }
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let words = lessonData[0];
+let selectedLesson = 0;
+let currentStage = 0;
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let matchSelected = { left: null, right: null };
+let matchPairs = [];
+let matchDone = 0;
+let matchSet = 0;      // 현재 세트 번호 (0~3)
+let matchSets = [];    // 5개씩 나눈 세트 배열
+let matchTotalDone = 0; // 전체 완료 수
+let wrongWords = []; // 틀린 문제 누적
+
+// ══════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════
+function selectLesson(idx, el) {
+  selectedLesson = idx;
+  words = shuffle(lessonData[idx]);
+  document.querySelectorAll('.lesson-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function startQuiz(stageIdx, retryWrong=false) {
+  currentStage = stageIdx;
+  currentQ = 0;
+  score = 0;
+  if (retryWrong) {
+    words = shuffle(wrongWords); // 틀린 문제만
+  } else {
+    words = shuffle(lessonData[selectedLesson]); // 전체 문제
+  }
+  wrongWords = [];
+  answered = false;
+  matchSelected = { left: null, right: null };
+  matchPairs = [];
+  matchDone = 0;
+  matchSet = 0;
+  matchSets = [];
+  matchTotalDone = 0;
+
+  document.getElementById('homeScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  document.getElementById('qiStage').textContent = stageInfo[stageIdx].step;
+  document.getElementById('qiTitle').textContent = stageInfo[stageIdx].title;
+  document.getElementById('globalFb').className = 'feedback';
+  document.getElementById('quizBody').innerHTML = '';
+
+  const btnNext = document.getElementById('btnNext');
+  btnNext.style.display = (stageIdx === 2) ? 'none' : 'block';
+  btnNext.disabled = true;
+
+  updateProgress();
+  renderStage();
+}
+
+function goHome() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('homeScreen').style.display = 'block';
+  document.getElementById('globalFb').className = 'feedback';
+}
+
+// ══════════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════════
+function updateProgress() {
+  const total = (currentStage === 5) ? S6_QUESTIONS.length : words.length;
+  const cur   = (currentStage === 2) ? matchTotalDone : currentQ;
+  const pct   = Math.round((cur / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent =
+    currentStage === 2 ? `${matchTotalDone} / ${words.length}` : `${Math.min(cur+1,total)} / ${total}`;
+  document.getElementById('scoreBadge').textContent = `⭐ ${score}점`;
+}
+
+const S6_QUESTIONS = [{"defs": ["a sign that shows someone or something was present", "the group of people who have gathered to watch or listen to something", "not able to be touched or measured, and difficult to describe or explain", "to put or keep something out of sight"], "defKrs": ["누군가나 무언가가 있었음을 보여주는 흔적", "무언가를 보거나 듣기 위해 모인 사람들의 집단", "만지거나 측정할 수 없고 묘사하거나 설명하기 어려운", "무언가를 시야 밖에 두거나 유지하다"], "answer_words": ["audience", "hide", "intangible", "trace"], "options": [["audience", "intangible", "poisonous", "researcher"], ["audience", "consider", "hide", "symbol"], ["characteristic", "hide", "trace", "worldwide"], ["contain", "intangible", "laugh", "trace"], ["audience", "hide", "intangible", "trace"]], "correct_idx": 4}, {"defs": ["the action of taking air into the lungs and sending it out again", "the group of people who officially control a country", "to make the noise with your voice that shows you think something is funny", "to understand or become aware of something"], "defKrs": ["폐로 공기를 들이마시고 다시 내보내는 행위", "공식적으로 나라를 통제하는 사람들의 집단", "무언가가 재미있다고 생각한다는 것을 보여주는 소리를 내다", "무언가를 이해하거나 알게 되다"], "answer_words": ["breathing", "government", "laugh", "realize"], "options": [["breathing", "realize", "statue", "trace"], ["consider", "laugh", "once", "realize"], ["breathing", "government", "laugh", "realize"], ["breathing", "government", "realize", "symbol"], ["consider", "government", "laugh", "realize"]], "correct_idx": 2}, {"defs": ["a substance that provides nourishment essential for growth and the maintenance of life", "the most important city or town of a country or region", "to teach someone to do a particular job or activity", "a feature or quality belonging typically to a person, place, or thing"], "defKrs": ["성장과 생명 유지에 필수적인 영양을 공급하는 물질", "한 나라나 지역에서 가장 중요한 도시", "누군가에게 특정 일이나 활동을 하도록 가르치다", "보통 사람, 장소, 또는 사물에 속하는 특징이나 속성"], "answer_words": ["capital", "characteristic", "nutrient", "train"], "options": [["capital", "characteristic", "nutrient", "train"], ["bomb", "capital", "characteristic", "train"], ["capital", "characteristic", "experience", "statue"], ["characteristic", "explain", "moment", "nutrient"], ["heritage", "nutrient", "train", "vision"]], "correct_idx": 0}, {"defs": ["to make something clear or easy to understand", "the process of doing and seeing things and of having things happen to you", "to make or become better than before", "to encourage something to happen or develop; or to advertise a product or event so that people will buy it or support it"], "defKrs": ["무언가를 명확하거나 이해하기 쉽게 만들다", "무언가를 하고 보고 일어나는 과정", "이전보다 더 좋게 만들거나 되다", "무언가가 일어나거나 발전하도록 장려하다; 또는 사람들이 구매하거나 지지하도록 제품이나 행사를 홍보하다"], "answer_words": ["experience", "explain", "improve", "promote"], "options": [["experience", "explain", "improve", "promote"], ["experience", "explain", "improve", "moment"], ["experience", "explain", "government", "improve"], ["community", "crush", "explain", "promote"], ["community", "improve", "promote", "suitable"]], "correct_idx": 0}, {"defs": ["a picture or shape that has a particular meaning or represents a particular organization or idea", "not afraid to do new and dangerous or exciting things", "existing, happening, or moving throughout the whole world", "a particular point in time"], "defKrs": ["특정 의미를 가지거나 특정 조직이나 아이디어를 나타내는 그림이나 형태", "새롭고 위험하거나 흥미로운 것을 하는 것을 두려워하지 않는", "전 세계에 걸쳐 존재하거나 일어나거나 움직이는", "시간의 특정한 지점"], "answer_words": ["adventurous", "moment", "symbol", "worldwide"], "options": [["adventurous", "moment", "spinach", "symbol"], ["adventurous", "capital", "spinach", "worldwide"], ["adventurous", "moment", "symbol", "worldwide"], ["adventurous", "moment", "realize", "worldwide"], ["adventurous", "characteristic", "moment", "symbol"]], "correct_idx": 2}, {"defs": ["at some time in the past, but not now", "to establish an organization, committee, government, etc.", "a group of people living in the same place or having a particular characteristic in common", "to go to and be present at an event, meeting, or school"], "defKrs": ["현재는 아니지만 과거 어느 시점에", "조직, 위원회, 정부 등을 설립하다", "같은 장소에 살거나 공통된 특성을 가진 사람들의 집단", "행사, 회의, 또는 학교에 가서 참석하다"], "answer_words": ["attend", "community", "form", "once"], "options": [["attend", "community", "form", "once"], ["breathing", "community", "form", "spinach"], ["attend", "form", "hide", "once"], ["community", "form", "nutrient", "once"], ["attend", "form", "mistake", "once"]], "correct_idx": 0}, {"defs": ["a person who earns money to support a family", "a suit made of rubber that people wear for water sports such as diving and surfing", "of or relating to the sea or the plants and animals that live in the sea", "to take in a liquid, gas, or other substance from the surface or space around"], "defKrs": ["가족을 부양하기 위해 돈을 버는 사람", "다이빙과 서핑 같은 수상 스포츠를 위해 사람들이 입는 고무로 만든 옷", "바다나 바다에 사는 식물과 동물에 관한", "주변 표면이나 공간에서 액체, 기체 또는 다른 물질을 흡수하다"], "answer_words": ["absorb", "breadwinner", "marine", "wetsuit"], "options": [["absorb", "breadwinner", "marine", "wetsuit"], ["breadwinner", "improve", "suitable", "wetsuit"], ["audience", "marine", "symbol", "wetsuit"], ["contain", "crush", "marine", "wetsuit"], ["absorb", "breadwinner", "crush", "improve"]], "correct_idx": 0}, {"defs": ["the ability to see", "a vegetable with large dark green leaves", "a person who takes photographs especially as a job", "a person who flies an airplane, helicopter, etc."], "defKrs": ["볼 수 있는 능력", "크고 짙은 녹색 잎을 가진 채소", "특히 직업으로 사진을 찍는 사람", "비행기, 헬리콥터 등을 조종하는 사람"], "answer_words": ["photographer", "pilot", "spinach", "vision"], "options": [["photographer", "pilot", "spinach", "vision"], ["contain", "hide", "photographer", "vision"], ["laugh", "pilot", "vision", "wetsuit"], ["photographer", "poisonous", "spinach", "worldwide"], ["article", "photographer", "pilot", "vision"]], "correct_idx": 0}, {"defs": ["very firmly or closely", "something that is not correct; a wrong action, statement, or judgment", "a device which explodes and damages or destroys a large area", "the art, buildings, traditions, and beliefs that a society considers important to its history and culture"], "defKrs": ["매우 단단하게 또는 가깝게", "올바르지 않은 것; 잘못된 행동, 진술, 또는 판단", "폭발하여 넓은 지역을 손상시키거나 파괴하는 장치", "사회가 역사와 문화에 중요하다고 여기는 예술, 건물, 전통, 믿음"], "answer_words": ["bomb", "heritage", "mistake", "tightly"], "options": [["bomb", "breathing", "mistake", "tightly"], ["heritage", "realize", "tightly", "trace"], ["bomb", "breathing", "photographer", "tightly"], ["bomb", "contain", "statue", "tightly"], ["bomb", "heritage", "mistake", "tightly"]], "correct_idx": 4}, {"defs": ["to think carefully about something, typically before making a decision", "having the qualities that are right, needed, or appropriate for something", "to have something inside or include something as a part", "to win a victory over someone in a battle, game, or contest"], "defKrs": ["보통 결정을 내리기 전에 무언가에 대해 신중하게 생각하다", "무언가에 맞거나 필요하거나 적절한 자질을 가진", "안에 무언가를 가지고 있거나 일부로 포함하다", "전투, 게임, 또는 경쟁에서 누군가에게 승리를 거두다"], "answer_words": ["consider", "contain", "defeat", "suitable"], "options": [["consider", "marine", "suitable", "vision"], ["contain", "defeat", "once", "suitable"], ["consider", "contain", "defeat", "suitable"], ["contain", "crush", "defeat", "suitable"], ["consider", "contain", "photographer", "wetsuit"]], "correct_idx": 2}, {"defs": ["containing or producing a substance that can cause death or illness if taken into the body", "someone who studies a subject, especially in order to discover new information", "a figure of a person or animal that is made from stone, metal, or wood", "a piece of writing included with others in a newspaper, magazine, or other publication"], "defKrs": ["몸속에 들어갔을 때 죽음이나 질병을 유발할 수 있는 물질을 함유하거나 생산하는", "특히 새로운 정보를 발견하기 위해 주제를 연구하는 사람", "돌, 금속, 또는 나무로 만든 사람이나 동물의 형체", "신문, 잡지 또는 다른 인쇄물에 다른 글들과 함께 실린 글"], "answer_words": ["article", "poisonous", "researcher", "statue"], "options": [["article", "poisonous", "researcher", "symbol"], ["article", "experience", "poisonous", "researcher"], ["breadwinner", "once", "poisonous", "researcher"], ["article", "marine", "researcher", "statue"], ["article", "poisonous", "researcher", "statue"]], "correct_idx": 4}, {"defs": ["to press or squeeze something so hard that it is damaged or loses its shape", "a public event where a collection of things is shown to the public", "a sign that shows someone or something was present", "the group of people who have gathered to watch or listen to something"], "defKrs": ["무언가가 손상되거나 모양을 잃을 만큼 세게 누르거나 짜다", "사물들의 모음이 대중에게 보여지는 공개 행사", "누군가나 무언가가 있었음을 보여주는 흔적", "무언가를 보거나 듣기 위해 모인 사람들의 집단"], "answer_words": ["audience", "crush", "exhibition", "trace"], "options": [["audience", "hide", "intangible", "trace"], ["crush", "explain", "realize", "trace"], ["crush", "exhibition", "suitable", "symbol"], ["audience", "crush", "exhibition", "trace"], ["audience", "exhibition", "marine", "trace"]], "correct_idx": 3}];
+
+// ══════════════════════════════════════════
+// 2단계 해석 토글
+// ══════════════════════════════════════════
+function toggleKr(btn) {
+  const krDiv = btn.nextElementSibling;
+  const arrow = btn.querySelector('.toggle-arrow');
+  const isOpen = krDiv.classList.contains('show');
+  krDiv.classList.toggle('show');
+  arrow.textContent = isOpen ? '▶' : '▼';
+  btn.innerHTML = btn.innerHTML.replace(
+    isOpen ? '한글 해석 숨기기' : '한글 해석 보기',
+    isOpen ? '한글 해석 보기' : '한글 해석 숨기기'
+  );
+}
+
+function toggleS6Kr(btn) {
+  const krDiv = btn.nextElementSibling;
+  const isOpen = krDiv.classList.contains('show');
+  krDiv.classList.toggle('show');
+  btn.textContent = isOpen ? '▶ 해석 보기' : '▼ 해석 숨기기';
+}
+
+// ══════════════════════════════════════════
+// TTS
+// ══════════════════════════════════════════
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US';
+  utt.rate = 0.85;
+  utt.pitch = 1;
+  window.speechSynthesis.speak(utt);
+}
+
+// 한글 뜻으로 영어 단어를 찾아 발음
+function speakByKr(kr) {
+  const all = lessonData[selectedLesson];
+  const found = all.find(w => w.kr === kr);
+  if (found) speak(found.word);
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function getWrong(correct, field, n=4) {
+  return shuffle(words.filter(w=>w.word!==correct).map(w=>w[field])).slice(0,n);
+}
+function escQ(s){ return String(s).replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
+function escId(s){ return String(s).replace(/[^a-zA-Z0-9]/g,'_'); }
+
+function showFeedback(isOk, okMsg, badMsg) {
+  // 해설 칸
+  const fb = document.getElementById('globalFb');
+  fb.className = 'feedback ' + (isOk ? 'ok' : 'bad');
+  fb.innerHTML = (isOk ? '✅ ' : '❌ ') + (isOk ? okMsg : badMsg);
+
+  // 정오답 오버레이
+  const ov = document.getElementById('resultOverlay');
+  ov.textContent = '';
+  ov.className = 'result-overlay ' + (isOk ? 'correct-circle' : 'wrong-x') + ' show';
+  setTimeout(() => { ov.className = 'result-overlay ' + (isOk ? 'correct-circle' : 'wrong-x') + ' hide'; }, 600);
+  setTimeout(() => { ov.className = 'result-overlay'; }, 1000);
+}
+
+function nextQuestion() {
+  currentQ++;
+  answered = false;
+  // 이전 문제 흔적 완전 제거
+  document.getElementById('quizBody').innerHTML = '';
+  document.getElementById('globalFb').className = 'feedback';
+  document.getElementById('btnNext').disabled = true;
+  updateProgress();
+  renderStage();
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function renderStage() {
+  [renderS1,renderS2,renderS3,renderS4,renderS5,renderS6][currentStage]();
+}
+
+/* ── STAGE 1 ── */
+function renderS1() {
+  if (currentQ >= words.length) { showResult(); return; }
+  const w = words[currentQ];
+  const opts = shuffle([w.kr, ...getWrong(w.word,'kr')]);
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">🔤 STEP 1 · 한글 뜻 맞추기</div>
+      <div class="stage-desc">영어 단어를 보고 알맞은 한글 뜻을 고르세요.</div>
+      <div class="question-word"><span>${w.word}</span></div>
+      <div class="options">
+        ${opts.map(o=>`<button class="opt-btn" onclick="speakByKr('${escQ(o)}');checkS1(this,'${escQ(o)}','${escQ(w.kr)}')">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  answered = false;
+  document.getElementById('btnNext').disabled = true;
+}
+function checkS1(btn,chosen,correct) {
+  if(answered)return; answered=true;
+  const ok=chosen===correct; if(ok)score+=10; else wrongWords.push(words[currentQ]);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok) document.querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent.trim()===correct)b.classList.add('correct'); });
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  showFeedback(ok,`정답! <b>${words[currentQ].word}</b>는 '${correct}'입니다.`,`오답. 정답은 '<b>${correct}</b>'입니다.`);
+  document.getElementById('btnNext').disabled=false;
+}
+
+/* ── STAGE 2 ── */
+function renderS2() {
+  if (currentQ >= words.length) { showResult(); return; }
+  const w = words[currentQ];
+  const opts = shuffle([w.word, ...getWrong(w.word,'word')]);
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">📘 STEP 2 · 영영풀이 보고 단어 찾기</div>
+      <div class="stage-desc">영영풀이와 한글 해석을 읽고, 알맞은 영어 단어를 고르세요.</div>
+      <div class="question-def">
+        ${w.def}
+        <div class="kr-toggle">
+          <button class="kr-toggle-btn" onclick="toggleKr(this)">
+            <span class="toggle-arrow">▶</span> 한글 해석 보기
+          </button>
+          <div class="kr-hidden">${w.defKr}</div>
+        </div>
+      </div>
+      <div class="options">
+        ${opts.map(o=>`<button class="opt-btn" onclick="checkS2(this,'${o}','${w.word}')">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  answered=false;
+  document.getElementById('btnNext').disabled=true;
+}
+function checkS2(btn,chosen,correct) {
+  if(answered)return; answered=true;
+  speak(chosen);
+  const ok=chosen===correct; if(ok)score+=10; else wrongWords.push(words[currentQ]);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok) document.querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent.trim()===correct)b.classList.add('correct'); });
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  showFeedback(ok,`정답! 이 영영풀이는 <b>${correct}</b>의 설명입니다.`,`오답. 정답은 <b>${correct}</b>입니다.`);
+  document.getElementById('btnNext').disabled=false;
+}
+
+/* ── STAGE 3 ── */
+function renderS3() {
+  // 첫 진입 시 세트 구성
+  if (matchSet === 0 && matchSets.length === 0) {
+    const shuffled = shuffle([...words]);
+    matchSets = [];
+    for (let i = 0; i < shuffled.length; i += 5) {
+      matchSets.push(shuffled.slice(i, i + 5));
+    }
+  }
+
+  const subset = matchSets[matchSet];
+  matchPairs = []; matchDone = 0; matchSelected = {left:null, right:null};
+  const leftItems  = shuffle(subset.map(w => w.word));
+  const rightItems = shuffle(subset.map(w => ({word:w.word, def:w.def})));
+  document.getElementById('btnNext').style.display = 'none';
+
+  const totalSets = matchSets.length;
+  const rows = leftItems.map((w, i) => {
+    const r = rightItems[i];
+    return `<div class="match-item" id="L_${w}" onclick="speak('${w}');matchClick('L','${w}')">${w}</div>` +
+           `<div class="match-item" id="R_${escId(r.word)}" onclick="matchClick('R','${r.word}')" style="font-size:0.75rem">${r.def}</div>`;
+  }).join('');
+
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">🔗 STEP 3 · 짝 맞추기</div>
+      <div class="stage-desc">왼쪽 단어와 오른쪽 영영풀이를 클릭해서 짝을 맞추세요. <b>(${matchSet+1} / ${totalSets} 세트)</b></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="match-col-title">단어</div>
+        <div class="match-col-title">영영풀이</div>
+        ${rows}
+      </div>
+      <div id="matchScore" style="text-align:center;margin-top:14px;font-weight:800;color:var(--muted);font-size:0.85rem;">0 / 5 완료</div>
+    </div>`;
+  updateProgress();
+}
+function matchClick(side,word) {
+  if(matchPairs.includes(word))return;
+  if(side==='L'){
+    if(matchSelected.left){ const el=document.getElementById('L_'+matchSelected.left); if(el)el.classList.remove('selected'); }
+    matchSelected.left=word; document.getElementById('L_'+word).classList.add('selected');
+  } else {
+    if(matchSelected.right){ const el=document.getElementById('R_'+escId(matchSelected.right)); if(el)el.classList.remove('selected'); }
+    matchSelected.right=word; document.getElementById('R_'+escId(word)).classList.add('selected');
+  }
+  if(matchSelected.left && matchSelected.right){
+    const lw=matchSelected.left, rw=matchSelected.right;
+    if(lw===rw){
+      matchDone++; matchPairs.push(lw); score+=10;
+      document.getElementById('L_'+lw).classList.replace('selected','matched');
+      document.getElementById('R_'+escId(rw)).classList.replace('selected','matched');
+      matchTotalDone++;
+      document.getElementById('matchScore').textContent=`${matchDone} / 5 완료`;
+      updateProgress();
+      if(matchDone === 5) {
+        setTimeout(() => {
+          matchSet++;
+          if (matchSet >= matchSets.length) {
+            showResult();
+          } else {
+            renderS3();
+          }
+        }, 500);
+      }
+    } else {
+      const lEl=document.getElementById('L_'+lw), rEl=document.getElementById('R_'+escId(rw));
+      lEl.classList.add('wrong-flash'); rEl.classList.add('wrong-flash');
+      setTimeout(()=>{ lEl.classList.remove('selected','wrong-flash'); rEl.classList.remove('selected','wrong-flash'); },600);
+    }
+    matchSelected={left:null,right:null};
+  }
+}
+
+/* ── STAGE 4 ── */
+function renderS4() {
+  if(currentQ>=words.length){ showResult(); return; }
+  const w=words[currentQ];
+  const opts=shuffle([w.word,...getWrong(w.word,'word')]);
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">✏️ STEP 4 · 예문 빈칸 채우기</div>
+      <div class="stage-desc">예문의 빈칸에 알맞은 영어 단어를 고르세요.</div>
+      <div class="sentence-box">
+        ${w.sentence.replace('_____','<span class="blank" id="s5blank"></span>')}
+        <div class="sent-kr">${w.sentenceKr}</div>
+      </div>
+      <div class="options">
+        ${opts.map(o=>`<button class="opt-btn" onclick="speak('${o}');checkS4(this,'${o}','${w.word}')">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  answered=false; document.getElementById('btnNext').disabled=true;
+}
+function checkS4(btn,chosen,correct) {
+  if(answered)return; answered=true;
+  const ok=chosen===correct; if(ok)score+=10; else wrongWords.push(words[currentQ]);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok) document.querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent.trim()===correct)b.classList.add('correct'); });
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  showFeedback(ok,`정답! 빈칸에는 <b>${correct}</b>가 들어갑니다.`,`오답. 정답은 <b>${correct}</b>입니다. 뜻: ${words[currentQ].kr}`);
+  document.getElementById('btnNext').disabled=false;
+}
+
+/* ── STAGE 5 ── */
+function renderS5() {
+  if(currentQ>=words.length){ showResult(); return; }
+  const w=words[currentQ];
+  const opts=shuffle([w.def,...getWrong(w.word,'def')]);
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">🏆 STEP 5 · 영영풀이 골라 빈칸 채우기</div>
+      <div class="stage-desc">빈칸에 들어갈 단어의 <b>영영풀이</b>를 고르세요.</div>
+      <div class="sentence-box">
+        ${w.sentence.replace('_____','<span class="blank" id="s5blank"></span>')}
+        <div class="sent-kr">${w.sentenceKr}</div>
+      </div>
+      <div class="options">
+        ${opts.map((o,i)=>`<button class="opt-btn" data-idx="${i}">${o}</button>`).join('')}
+      </div>
+    </div>`;
+
+  // onclick 대신 JS로 이벤트 연결 — 특수문자 오류 방지
+  const correctDef = w.def;
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => checkS5(btn, btn.textContent, correctDef));
+  });
+
+  answered=false; document.getElementById('btnNext').disabled=true;
+}
+function checkS5(btn,chosen,correct) {
+  if(answered)return; answered=true;
+  const ok=chosen===correct; if(ok)score+=10; else wrongWords.push(words[currentQ]);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok) document.querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent===correct)b.classList.add('correct'); });
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  const w=words[currentQ];
+  // 정답일 때 빈칸에 단어 표시
+  if(ok) {
+    const blank = document.getElementById('s5blank');
+    if(blank) {
+      blank.textContent = w.word;
+      blank.style.borderBottom = '2.5px solid var(--success)';
+      blank.style.color = '#047857';
+      blank.style.fontWeight = '800';
+      blank.style.width = 'auto';
+      blank.style.padding = '0 4px';
+    }
+  }
+  showFeedback(ok,`정답! 빈칸에는 <b>${w.word}</b>가 들어갑니다.`,`오답. 정답 영영풀이: "<b>${correct}</b>"`);
+  document.getElementById('btnNext').disabled=false;
+}
+
+
+/* ── STAGE 6 ── */
+function renderS6() {
+  if (currentQ >= S6_QUESTIONS.length) { showResult(); return; }
+  const q = S6_QUESTIONS[currentQ];
+
+  const defsHtml = q.defs.map((d, i) =>
+    `<div class="s6-def-item">
+      ${d}
+      <button class="s6-kr-btn" onclick="toggleS6Kr(this)">▶ 해석 보기</button>
+      <div class="s6-def-kr">${q.defKrs[i]}</div>
+    </div>`
+  ).join('');
+
+  const nums = ['①','②','③','④','⑤'];
+  const optsHtml = q.options.map((opt, i) =>
+    `<button class="s6-opt-btn" data-idx="${i}">
+      <span class="opt-num">${nums[i]}</span>
+      <span class="opt-words">${opt.join(', ')}</span>
+    </button>`
+  ).join('');
+
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card">
+      <div class="stage-title-tag">📝 STEP 6 · 실전문제</div>
+      <div class="stage-desc">보기의 영영풀이를 모두 설명하는 단어들을 고르세요. <b>(순서 무관)</b></div>
+      <div class="s6-box">
+        <div class="s6-box-title">〈 보기 〉</div>
+        ${defsHtml}
+      </div>
+      <div id="s6opts">${optsHtml}</div>
+    </div>`;
+
+  const correctIdx = q.correct_idx;
+  document.querySelectorAll('.s6-opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => checkS6(btn, parseInt(btn.dataset.idx), correctIdx, q));
+  });
+
+  answered = false;
+  document.getElementById('btnNext').disabled = true;
+}
+
+function checkS6(btn, chosen, correct, q) {
+  if (answered) return;
+  answered = true;
+  const ok = chosen === correct;
+  if (ok) score += 10; else wrongWords.push(words[currentQ] || {word: 'q'+currentQ});
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) {
+    document.querySelectorAll('.s6-opt-btn').forEach(b => {
+      if (parseInt(b.dataset.idx) === correct) b.classList.add('correct');
+    });
+  }
+  document.querySelectorAll('.s6-opt-btn').forEach(b => b.disabled = true);
+  const nums = ['①','②','③','④','⑤'];
+  showFeedback(ok,
+    `정답! ${nums[correct]} ${q.answer_words.join(', ')}`,
+    `오답. 정답은 ${nums[correct]} <b>${q.answer_words.join(', ')}</b>입니다.`
+  );
+  document.getElementById('btnNext').disabled = false;
+}
+
+/* ── RESULT ── */
+function showResult() {
+  const total=(currentStage===5)?S6_QUESTIONS.length*10:(currentStage===2)?50:words.length*10;
+  const pct=Math.round((score/total)*100);
+  const emoji=pct>=80?'🏆':pct>=60?'👍':'💪';
+  const msg=pct>=80?'훌륭합니다! 다음 단계도 도전해보세요.':pct>=60?'잘 했어요! 한 번 더 해볼까요?':'조금 더 연습해봐요!';
+  const hasWrong = wrongWords.length > 0;
+  const stageIdx = currentStage;
+
+  document.getElementById('quizBody').innerHTML =
+    `<div class="card result-card">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${score} / ${total}점</div>
+      <div class="result-pct">${pct}% 정답</div>
+      <div class="result-msg">${msg}</div>
+      <div class="result-btns">
+        <button class="result-action-btn btn-wrong ${hasWrong?'':'disabled'}"
+          onclick="${hasWrong?`retryWrong(${stageIdx})`:'void(0)'}" >
+          <span class="rab-icon">🔁</span>
+          <span class="rab-text">틀린 문제 다시하기
+            <small>${hasWrong ? wrongWords.length+'개 문제' : '틀린 문제 없음 🎉'}</small>
+          </span>
+        </button>
+        <button class="result-action-btn btn-retry" onclick="startQuiz(${stageIdx})">
+          <span class="rab-icon">📝</span>
+          <span class="rab-text">전체 문제 다시하기
+            <small>처음부터 다시 풀기</small>
+          </span>
+        </button>
+        <button class="result-action-btn btn-home" onclick="goHome()">
+          <span class="rab-icon">🏠</span>
+          <span class="rab-text">홈으로 돌아가기
+            <small>단계 또는 레슨 변경</small>
+          </span>
+        </button>
+      </div>
+    </div>`;
+  document.getElementById('btnNext').style.display='none';
+  document.getElementById('globalFb').className='feedback';
+  document.getElementById('progressBar').style.width='100%';
+}
+
+function retryWrong(stageIdx) {
+  startQuiz(stageIdx, true);
+}
+</script>
+</body>
+</html>
