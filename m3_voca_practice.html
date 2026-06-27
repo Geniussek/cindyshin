@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어휘문제 마스터</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:linear-gradient(160deg,#fce4ec 0%,#f8bbd0 40%,#fce4ec 100%);
+  min-height:100vh;
+  padding-bottom:60px;
+}
+
+.container{max-width:680px;margin:0 auto;padding:0 16px}
+
+/* ── 헤더 ── */
+.main-header{
+  text-align:center;
+  padding:40px 0 28px;
+}
+.main-header .emoji{font-size:44px;display:block;margin-bottom:10px;line-height:1}
+.main-header h1{
+  font-size:30px;font-weight:900;
+  color:#3a2a4a;
+  letter-spacing:-0.03em;
+  margin-bottom:6px;
+}
+.main-header .sub{font-size:14px;color:#b07090;font-weight:400}
+
+/* ── 섹션 라벨 ── */
+.section-label{
+  font-size:15px;font-weight:700;color:#5a3a5a;
+  margin:0 0 12px;
+  display:flex;align-items:center;gap:7px;
+}
+.section-label .ico{font-size:18px}
+
+/* ── 세트 그리드 ── */
+.set-section{margin-bottom:28px}
+.set-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.set-btn{
+  aspect-ratio:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border:2.5px solid #e8c8d8;
+  border-radius:20px;
+  background:#fff;
+  cursor:pointer;
+  padding:10px 6px;
+  text-align:center;
+  transition:all 0.18s;
+  gap:6px;
+  box-shadow:0 2px 8px rgba(180,100,130,0.08);
+  width:100%;
+}
+.set-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(180,100,130,0.15)}
+.set-btn:active{transform:scale(0.97)}
+.set-btn .set-emoji{font-size:28px;line-height:1}
+.set-btn .set-name{font-size:12px;font-weight:700;color:#4a2a4a;line-height:1.3}
+.set-btn.active{
+  border-color:#e05080;
+  background:linear-gradient(135deg,#fff0f5,#ffe0eb);
+  box-shadow:0 0 0 3px rgba(224,80,128,0.18),0 4px 14px rgba(224,80,128,0.15);
+}
+.set-btn.active .set-name{color:#c03060}
+.set-btn.empty{opacity:0.45;cursor:not-allowed;pointer-events:none}
+.set-btn.empty .set-name{color:#b090a0}
+
+/* ── 스텝 섹션 ── */
+.step-section{margin-bottom:16px}
+.step-list{display:flex;flex-direction:column;gap:12px}
+
+.step-row{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;
+  background:#fff;
+  border:2.5px solid #e8c8d8;
+  border-radius:16px;
+  cursor:pointer;
+  transition:all 0.15s;
+  box-shadow:0 2px 8px rgba(180,100,130,0.07);
+}
+.step-row:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(180,100,130,0.13)}
+.step-row:active{transform:scale(0.99)}
+
+.step-badge{
+  min-width:72px;
+  padding:7px 10px;
+  border-radius:10px;
+  font-size:13px;font-weight:700;
+  color:#fff;
+  text-align:center;
+  font-family:'Inter',sans-serif;
+  letter-spacing:0.02em;
+  flex-shrink:0;
+}
+.badge-1{background:#e84040}
+.badge-2{background:#3090e0}
+.badge-3{background:#28a060}
+.badge-4{background:#e08020}
+.badge-5{background:#8040c0}
+
+.step-row.active-step{border-width:2.5px}
+.step-row.active-1{border-color:#e84040;background:#fff8f8}
+.step-row.active-2{border-color:#3090e0;background:#f5f9ff}
+.step-row.active-3{border-color:#28a060;background:#f4faf7}
+.step-row.active-4{border-color:#e08020;background:#fff9f2}
+.step-row.active-5{border-color:#8040c0;background:#faf5ff}
+
+.step-title{
+  font-size:16px;font-weight:700;color:#3a2040;
+  flex:1;
+}
+
+/* ── 퀴즈 화면 ── */
+.quiz-screen{display:none}
+.quiz-screen.show{display:block}
+.main-screen{display:block}
+.main-screen.hide{display:none}
+
+.quiz-header{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 0 16px;
+}
+.back-btn{
+  width:36px;height:36px;
+  border:2px solid #e8c8d8;border-radius:50%;
+  background:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#c03060;
+  transition:background 0.12s;
+  flex-shrink:0;
+}
+.back-btn:hover{background:#fff0f5}
+.quiz-header-info{flex:1}
+.quiz-header-title{font-size:14px;font-weight:700;color:#3a2040}
+.quiz-header-sub{font-size:12px;color:#b07090;margin-top:2px}
+
+/* ── 점수바 ── */
+.score-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;
+  background:#fff;border:1.5px solid #e8c8d8;border-radius:12px;
+  margin-bottom:14px;
+  font-size:13px;color:#8a6070;
+}
+.score-bar .snum{font-weight:700;color:#3a2040;font-family:'Inter',sans-serif}
+
+/* ── 문제 카드 ── */
+.q-card{
+  background:#fff;
+  border:1.5px solid #e8c8d8;
+  border-radius:20px;
+  padding:22px 20px 18px;
+  margin-bottom:12px;
+  box-shadow:0 2px 12px rgba(180,100,130,0.08);
+}
+.q-label{font-size:12px;color:#b07090;margin-bottom:12px;font-weight:500;letter-spacing:0.04em}
+.q-word{
+  font-size:30px;font-weight:900;color:#3a2040;
+  margin-bottom:16px;font-family:'Inter',sans-serif;letter-spacing:-0.01em;
+}
+.tts-word{
+  cursor:pointer;display:inline-block;
+  padding:6px 14px;border-radius:12px;
+  transition:background 0.15s;
+}
+.tts-word:hover{background:#fff0f5}
+.q-sent{font-size:15px;line-height:2;color:#3a2040;margin-bottom:6px}
+.q-sent .blank{
+  display:inline-block;border-bottom:2.5px solid #c8a0b8;
+  min-width:80px;text-align:center;
+}
+.q-hint{font-size:13px;color:#b07090;margin-bottom:14px}
+
+/* ── 영영풀이 박스 ── */
+.def-box{
+  background:linear-gradient(135deg,#fff0f5,#ffe8f0);
+  border:1.5px solid #f0b0c8;
+  border-radius:14px;
+  padding:14px 16px;
+  font-size:15px;
+  color:#5a2040;
+  line-height:1.7;
+  margin-bottom:14px;
+  font-style:italic;
+}
+
+/* ── 선택지 ── */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.opts-col{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.opt-btn{
+  padding:12px 14px;
+  border:1.5px solid #e0c8d4;border-radius:12px;
+  background:#fdfbfc;cursor:pointer;
+  font-size:14px;color:#3a2040;text-align:left;
+  font-family:'Noto Sans KR',sans-serif;
+  transition:all 0.12s;line-height:1.5;
+}
+.opt-btn:hover:not(:disabled){background:#fff0f5;border-color:#e090b0}
+.opt-num{color:#b07090;margin-right:6px;font-family:'Inter',sans-serif}
+.opt-btn.correct{background:#eafaf2;border-color:#28a060;color:#1a7040}
+.opt-btn.wrong{background:#fdecea;border-color:#e84040;color:#c02020}
+.opt-btn:disabled{cursor:default}
+
+/* ── 피드백 ── */
+.feedback{
+  margin-top:12px;padding:10px 14px;border-radius:12px;
+  font-size:14px;font-weight:500;
+}
+.feedback.ok{background:#eafaf2;color:#1a7040}
+.feedback.ng{background:#fdecea;color:#c02020}
+
+/* ── 버튼 ── */
+.nav-row{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.btn{
+  padding:10px 20px;border:1.5px solid #e0c8d4;border-radius:12px;
+  background:#fff;cursor:pointer;font-size:14px;color:#5a3a5a;
+  font-family:'Noto Sans KR',sans-serif;transition:all 0.12s;
+}
+.btn:hover{background:#fff0f5}
+.btn.primary{background:#e84040;color:#fff;border-color:#e84040;font-weight:700}
+.btn.primary:hover{background:#c83030}
+.btn.primary-blue{background:#3090e0;color:#fff;border-color:#3090e0;font-weight:700}
+.btn.primary-green{background:#28a060;color:#fff;border-color:#28a060;font-weight:700}
+.btn.primary-orange{background:#e08020;color:#fff;border-color:#e08020;font-weight:700}
+.btn.primary-purple{background:#8040c0;color:#fff;border-color:#8040c0;font-weight:700}
+
+/* ── 결과 ── */
+.result-box{text-align:center;padding:3rem 1rem}
+.result-score{font-size:54px;font-weight:900;font-family:'Inter',sans-serif;letter-spacing:-0.02em;margin:10px 0 4px}
+.result-pct{font-size:22px;font-weight:600;color:#8a6070;font-family:'Inter',sans-serif;margin-bottom:10px}
+.result-msg{font-size:15px;color:#b07090;margin-bottom:28px}
+
+/* ── Step 3 매칭 ── */
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.match-col-title{font-size:12px;color:#b07090;font-weight:600;margin-bottom:8px;text-align:center;letter-spacing:0.04em}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{
+  padding:10px 12px;border:1.5px solid #e0c8d4;border-radius:10px;
+  background:#fdfbfc;cursor:pointer;font-size:13px;color:#3a2040;
+  text-align:center;transition:all 0.12s;line-height:1.4;
+}
+.match-item:hover{background:#fff0f5;border-color:#e090b0}
+.match-item.selected{background:#fff0f5;border-color:#e84040;color:#c03060;font-weight:600}
+.match-item.matched-ok{background:#eafaf2;border-color:#28a060;color:#1a7040;cursor:default}
+.match-item.matched-ng{background:#fdecea;border-color:#e84040;color:#c02020}
+.match-item.disabled-item{opacity:0.35;cursor:default}
+
+/* ── Step 3 드래그 앤 드롭 ── */
+.s5-passage{
+  background:#fff8fb;border:1.5px solid #e8c8d8;border-radius:16px;
+  padding:18px 18px;margin-bottom:12px;font-size:15px;line-height:2.5;
+}
+.s-row{margin-bottom:4px}
+.s5-blank{
+  display:inline-block;
+  border-bottom:2.5px solid #c8a0b8;
+  min-width:110px;height:28px;
+  text-align:center;color:#b07090;
+  padding:0 8px;
+  vertical-align:middle;
+  transition:all 0.15s;
+  border-radius:4px;
+}
+.s5-drop-zone{
+  background:rgba(224,80,128,0.04);
+  border-bottom:2.5px dashed #e090b0;
+}
+.s5-drop-zone.drag-over{
+  background:rgba(224,80,128,0.14);
+  border-bottom:2.5px solid #e84040;
+}
+.s5-blank.filled{
+  color:#3a2040;font-weight:600;
+  border-bottom:2.5px solid #8040c0;
+  background:rgba(128,64,192,0.07);
+  cursor:grab;
+}
+.s5-blank.blank-ok{
+  color:#1a7040;font-weight:700;
+  border-bottom:2.5px solid #28a060;
+  background:#eafaf2;cursor:default;
+}
+.s5-blank.blank-ng{
+  color:#c02020;font-weight:700;
+  border-bottom:2.5px solid #e84040;
+  background:#fdecea;cursor:default;
+}
+.s5-hint{font-size:12px;color:#b07090;margin-bottom:12px}
+.s5-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.s5-chip{
+  display:inline-block;padding:8px 16px;
+  border:1.5px solid #d0b0c4;border-radius:20px;
+  background:#fff;font-size:14px;color:#3a2040;
+  cursor:grab;user-select:none;transition:all 0.12s;
+  font-family:'Noto Sans KR',sans-serif;
+}
+.s5-chip:hover{background:#fff0f5;border-color:#e090b0}
+.s5-chip:active{cursor:grabbing;transform:scale(0.97)}
+.s5-chip.chip-used{opacity:0.25;cursor:not-allowed;pointer-events:none}
+.s5-chip.chip-selected{background:#fff0f5;border-color:#e84040;color:#c03060;font-weight:700;box-shadow:0 0 0 2px rgba(232,64,64,0.2)}
+.s5-chip.chip-correct{background:#eafaf2;border-color:#28a060;color:#1a7040;font-weight:700;cursor:default;opacity:1;pointer-events:none}
+.s5-chip.chip-wrong{background:#fdecea;border-color:#e84040;color:#c02020;font-weight:700;cursor:default;opacity:1;pointer-events:none}
+.s5-drop-zone{background:rgba(224,80,128,0.04);border-bottom:2.5px dashed #e090b0;cursor:pointer}
+.s5-drop-zone.blank-ready{background:rgba(232,64,64,0.08);border-bottom:2.5px dashed #e84040;}
+  background:#8040c0;color:#fff;border-color:#8040c0;font-weight:700;
+}
+.btn-score:hover:not(:disabled){background:#6030a0}
+.btn-score:disabled{background:#c8a8d8;border-color:#c8a8d8;cursor:not-allowed}
+.score-result{border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.score-ok{background:#eafaf2;border:1.5px solid #28a060}
+.score-ng{background:#fdecea;border:1.5px solid #e84040}
+.result-chip{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;margin-bottom:8px}
+.chip-ok{background:#28a060;color:#fff}
+.chip-ng{background:#e84040;color:#fff}
+.score-main{font-size:15px;font-weight:600;color:#3a2040;margin-bottom:4px}
+.score-sub{font-size:13px;color:#8a5060}
+.explain-box{background:#fff8fb;border:1.5px solid #e8c8d8;border-radius:12px;padding:14px 16px;margin-bottom:4px}
+.explain-title{font-size:13px;font-weight:700;color:#8040c0;margin-bottom:10px}
+.explain-row{font-size:14px;color:#3a2040;line-height:2.2;margin-bottom:2px}
+.ans-word{color:#1a7040;font-style:normal;background:#eafaf2;padding:1px 6px;border-radius:4px;font-weight:700}
+
+/* ── 피드백 고정 바 ── */
+.feedback-fixed{
+  position:sticky;
+  bottom:0;
+  left:0;right:0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+  background:#f0f0f0;
+  border-top:2px solid #ddd;
+  border-radius:0;
+  margin-top:12px;
+  min-height:58px;
+  transition:background 0.2s,border-color 0.2s;
+  gap:12px;
+}
+.feedback-fixed .fb-placeholder{flex:1;font-size:14px;color:#b07090}
+.feedback-fixed.fb-ok{background:#eafaf2;border-top-color:#28a060}
+.feedback-fixed.fb-ng{background:#fdecea;border-top-color:#e84040}
+.feedback-fixed .fb-msg{flex:1;font-size:15px;font-weight:600}
+.feedback-fixed.fb-ok .fb-msg{color:#1a7040}
+.feedback-fixed.fb-ng .fb-msg{color:#c02020}
+.btn-confirm{
+  flex-shrink:0;
+  padding:10px 22px;
+  border:none;border-radius:12px;
+  background:#3a2040;color:#fff;
+  font-size:14px;font-weight:700;
+  font-family:'Noto Sans KR',sans-serif;
+  cursor:pointer;
+  transition:background 0.12s,transform 0.1s;
+  white-space:nowrap;
+}
+.btn-confirm:hover{background:#5a3060;transform:scale(1.03)}
+.feedback-fixed.fb-ok .btn-confirm{background:#28a060}
+.feedback-fixed.fb-ok .btn-confirm:hover{background:#1a7040}
+.feedback-fixed.fb-ng .btn-confirm{background:#e84040}
+.feedback-fixed.fb-ng .btn-confirm:hover{background:#c02020}
+
+/* ── 결과 버튼 3개 세로 ── */
+.result-btns{
+  display:flex;flex-direction:column;gap:12px;
+  max-width:320px;margin:0 auto;
+}
+.result-btn{
+  width:100%;padding:14px 20px;
+  border-radius:14px;font-size:15px;font-weight:700;
+  text-align:center;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;
+  transition:all 0.15s;border:none;
+}
+.btn-retry-wrong{background:#e84040;color:#fff}
+.btn-retry-wrong:hover:not(:disabled){background:#c02020}
+.btn-retry-wrong:disabled{background:#e0c8d4;color:#b090a0;cursor:not-allowed}
+.btn-retry-all{background:#3090e0;color:#fff}
+.btn-retry-all:hover{background:#1a70c0}
+.btn-main{background:#fff;color:#5a3a5a;border:1.5px solid #e8c8d8 !important}
+.btn-main:hover{background:#fff0f5}
+  .set-grid{grid-template-columns:repeat(4,1fr);gap:6px}
+  .set-btn .set-emoji{font-size:22px}
+  .set-btn .set-name{font-size:10px}
+  .opts{grid-template-columns:1fr}
+  .match-area{grid-template-columns:1fr;gap:16px}
+  .main-header h1{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ 메인 화면 ══ -->
+<div class="main-screen" id="mainScreen">
+  <div class="container">
+    <div class="main-header">
+      <span class="emoji">📖</span>
+      <h1>어휘문제 마스터</h1>
+    </div>
+
+    <div class="set-section">
+      <div class="section-label"><span class="ico">📦</span> 단어 세트 고르기</div>
+      <div class="set-grid" id="setGrid"></div>
+    </div>
+
+    <div class="step-section">
+      <div class="section-label"><span class="ico">✏️</span> 학습 단계</div>
+      <div class="step-list">
+        <div class="step-row" id="srow1" onclick="startQuiz(1)">
+          <span class="step-badge badge-1">STEP 1</span>
+          <span class="step-title">단어 연습</span>
+        </div>
+        <div class="step-row" id="srow2" onclick="startQuiz(2)">
+          <span class="step-badge badge-2">STEP 2</span>
+          <span class="step-title">예문 연습</span>
+        </div>
+        <div class="step-row" id="srow3" onclick="startQuiz(3)">
+          <span class="step-badge badge-3">STEP 3</span>
+          <span class="step-title">실전 문제</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 퀴즈 화면 ══ -->
+<div class="quiz-screen" id="quizScreen">
+  <div class="container">
+    <div class="quiz-header">
+      <button class="back-btn" onclick="goMain()">←</button>
+      <div class="quiz-header-info">
+        <div class="quiz-header-title" id="qhTitle"></div>
+        <div class="quiz-header-sub" id="qhSub"></div>
+      </div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+</div>
+
+<script>
+const SETS_META = [
+  {key:"L3", name:"<중3> Lesson 3", emoji:"🌱", count:24},
+  {key:"L4", name:"<중3> Lesson 4", emoji:"🌍", count:22},
+  {key:"J3", name:"<중2> Lesson 3", emoji:"💡", count:0},
+  {key:"J4", name:"<중2> Lesson 4", emoji:"🎯", count:0},
+];
+
+const STEP_COLORS = {1:"primary",2:"primary-blue",3:"primary-green",4:"primary-orange",5:"primary-purple"};
+const STEP_NAMES = {
+  1:"단어 연습",
+  2:"예문 연습",
+  3:"실전 문제"
+};
+
+const WORDS = {
+  L3:[
+    {w:"absorb",m:"흡수하다",d:"to take in or soak up a liquid or gas",s:"When it _____ water, spinach also absorbs many other things from the soil."},
+    {w:"article",m:"기사",d:"a piece of writing in a newspaper or magazine",s:"The British government published an _____ in the newspaper."},
+    {w:"battleship",m:"전함",d:"a very large and heavily armed military ship",s:"It can even be used to make _____."},
+    {w:"billion",m:"10억",d:"the number 1,000,000,000",s:"There are over eight _____ people on the planet."},
+    {w:"characteristic",m:"특성, 특징",d:"a typical feature or quality of something",s:"Some scientists have used this _____ of spinach to find bombs."},
+    {w:"contain",m:"포함하다, 함유하다",d:"to have something inside or as part of it",s:"Carrots _____ a lot of vitamin A, which keeps our eyes healthy."},
+    {w:"crush",m:"으깨다, 압착하다",d:"to press something so hard that it breaks or loses its shape",s:"The car was _____ under the bus."},
+    {w:"defeat",m:"패배시키다, 이기다",d:"to win against someone in a fight or competition",s:"The Royal Air Force _____ German fighters during World War II."},
+    {w:"government",m:"정부",d:"the group of people who officially control a country",s:"My mom works for the _____."},
+    {w:"hide",m:"숨기다",d:"to put something in a place where it cannot be seen",s:"I _____ the present under my bed."},
+    {w:"improve",m:"향상시키다",d:"to make something better than it was before",s:"Do you want to _____ your English?"},
+    {w:"insight",m:"통찰력",d:"a clear and deep understanding of something",s:"The book provides deep _____ into human behavior."},
+    {w:"keep a secret",m:"비밀을 지키다",d:"to not tell others about private information",s:"He wants me to _____."},
+    {w:"nutrient",m:"영양소",d:"a substance that plants or animals need to live and grow",s:"A good breakfast full of _____ will make you healthy."},
+    {w:"pilot",m:"조종사",d:"a person who flies an aircraft",s:"The _____ of the plane is speaking."},
+    {w:"planet",m:"행성",d:"a large round object in space that moves around a star",s:"Scientists have discovered a new _____."},
+    {w:"poisonous",m:"유독한, 독이 있는",d:"causing death or illness if eaten or touched",s:"_____ plants can kill people and animals."},
+    {w:"radar",m:"레이더",d:"a system using radio waves to find the position of objects",s:"These airports use _____ to control air traffic."},
+    {w:"researcher",m:"연구원",d:"a person who studies a subject carefully to find new facts",s:"We are looking for a _____ who has studied space science."},
+    {w:"snowboard",m:"스노보드",d:"a board used to slide down snow-covered slopes",s:"I got a _____ for my birthday present."},
+    {w:"soak up",m:"흡수하다",d:"to absorb a liquid through a surface",s:"The towel _____ the water."},
+    {w:"sore throat",m:"목 아픔, 인후통",d:"a painful or irritated feeling in the throat",s:"I have a _____."},
+    {w:"spinach",m:"시금치",d:"a dark green leafy vegetable often used in salads",s:"He gets his super power by eating _____."},
+    {w:"trace",m:"흔적",d:"a very small amount or sign of something",s:"When these plants soak up _____ from bombs, the sensors light up."}
+  ],
+  L4:[
+    {w:"ad",m:"광고",d:"a notice or picture that tells people about a product or service",s:"They put an _____ in the local paper."},
+    {w:"audience",m:"청중, 관객",d:"the people who watch or listen to a performance",s:"All the _____ stood up and gave a big hand."},
+    {w:"breadwinner",m:"가장, 생계 부양자",d:"the person in a family who earns money to support the others",s:"She couldn't stop working because she was the _____."},
+    {w:"breathe",m:"호흡하다, 숨쉬다",d:"to take air into your lungs and let it out again",s:"It's important to _____ deeply while exercising."},
+    {w:"community",m:"공동체, 지역사회",d:"a group of people who live in the same area or share something",s:"We live in a very friendly and close _____."},
+    {w:"exhibition",m:"전시회",d:"a public show of art, products, or other items",s:"They went to see the photography _____."},
+    {w:"experience",m:"경험하다, 경험",d:"to have or live through an event or situation",s:"Traveling helps us _____ different cultures."},
+    {w:"explain",m:"설명하다",d:"to make something clear by describing it in detail",s:"The teacher _____ the rules clearly to the students."},
+    {w:"female",m:"여성의, 여성",d:"belonging to the sex that can have babies",s:"There are many talented _____ pilots in the air force."},
+    {w:"overseas",m:"해외의, 해외로",d:"in or to a foreign country across the sea",s:"He loves to travel _____ during the vacation."},
+    {w:"past",m:"지난, 과거",d:"the time that has already happened before now",s:"In the _____, people didn't have smartphones."},
+    {w:"path",m:"길, 경로",d:"a narrow way made for walking",s:"Follow the small _____ through the beautiful woods."},
+    {w:"photographer",m:"사진작가",d:"a person who takes photographs as a job or hobby",s:"She wants to become a professional _____."},
+    {w:"promote",m:"홍보하다, 촉진하다",d:"to advertise something so that more people know about it",s:"They held an event to _____ their new product."},
+    {w:"realize",m:"깨닫다, 실현하다",d:"to understand or become aware of something",s:"He finally _____ how important his family was."},
+    {w:"several",m:"몇몇의",d:"more than two but not very many",s:"I have visited that museum _____ times before."},
+    {w:"suitable",m:"적합한, 알맞은",d:"right or correct for a particular situation or purpose",s:"This movie is not _____ for young children."},
+    {w:"tightly",m:"단단히, 꽉",d:"in a firm and secure way with no looseness",s:"Hold on _____ to the handle so you don't fall."},
+    {w:"underwater",m:"수중의, 물속에서",d:"below the surface of water",s:"They enjoyed taking _____ photos in Jeju Island."},
+    {w:"volcanic",m:"화산의",d:"relating to or produced by a volcano",s:"Jeju is a beautiful _____ island in Korea."},
+    {w:"wetsuit",m:"잠수복",d:"a tight rubber suit worn to keep warm in water",s:"You need to wear a thick _____ when diving in winter."},
+    {w:"worldwide",m:"전 세계적인, 세계적으로",d:"existing or happening in all parts of the world",s:"The K-pop group gained _____ popularity."}
+  ]
+};
+
+
+let curKey = "L3", curStep = 1;
+let qIdx = 0, score = 0, total = 0, answered = false, questions = [];
+let matchState = null, s5state = null;
+let wrongQuestions = [];
+let s5questions = [], s5qIdx = 0, s5score = 0;
+
+function shuffle(a){return[...a].sort(()=>Math.random()-0.5)}
+
+// ── TTS ──
+function speak(word){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+// Step 3 문제 세트 생성: 단어 전체를 4개씩 묶고, 각 세트에서 오답 1개 추가
+function buildS5Questions(words){
+  const shuffled = shuffle(words.filter(w=>w.s.includes('_____')));
+  const sets = [];
+  for(let i=0;i<shuffled.length;i+=4){
+    const group = shuffled.slice(i, i+4);
+    if(group.length < 2) break; // 너무 적으면 skip
+    // 오답: 이 그룹에 없는 단어 중 하나
+    const usedWords = group.map(g=>g.w);
+    const pool = words.filter(w=>!usedWords.includes(w.w));
+    const wrongWord = shuffle(pool)[0];
+    // 보기 = 정답 4개 + 오답 1개, 섞기
+    const options = shuffle([...group.map(g=>g.w), wrongWord.w]);
+    sets.push({
+      sents: group.map(g=>g.s),
+      answers: group.map(g=>g.w),
+      options: options,
+      wrongAnswer: wrongWord.w
+    });
+  }
+  return sets;
+}
+
+// ── 메인/퀴즈 전환 ──
+function goMain(){
+  document.getElementById('mainScreen').classList.remove('hide');
+  document.getElementById('mainScreen').style.display='block';
+  document.getElementById('quizScreen').classList.remove('show');
+  document.getElementById('quizScreen').style.display='none';
+  renderSetGrid();
+  renderStepRows();
+}
+
+function startQuiz(step){
+  curStep = step;
+  document.getElementById('mainScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  const meta = SETS_META.find(s=>s.key===curKey);
+  document.getElementById('qhTitle').textContent = `${meta.name} — ${STEP_NAMES[step]}`;
+  document.getElementById('qhSub').textContent = `총 ${WORDS[curKey]?WORDS[curKey].length:0}개 단어`;
+  initQuiz();
+}
+
+// ── 세트 그리드 ──
+function renderSetGrid(){
+  document.getElementById('setGrid').innerHTML = SETS_META.map(s=>{
+    const has = !!WORDS[s.key];
+    const isActive = s.key === curKey && has;
+    return `<button class="set-btn${isActive?' active':''}${!has?' empty':''}"
+      onclick="${has?`selectSet('${s.key}')`:''}" ${!has?'disabled':''}>
+      <span class="set-emoji">${s.emoji}</span>
+      <span class="set-name">${s.name}</span>
+    </button>`;
+  }).join('');
+}
+
+function renderStepRows(){
+  [1,2,3].forEach(n=>{
+    const row = document.getElementById(`srow${n}`);
+    if(row) row.className = `step-row`;
+  });
+}
+
+function selectSet(key){
+  if(!WORDS[key])return;
+  curKey=key;
+  renderSetGrid();
+}
+
+// ── 퀴즈 초기화 ──
+function initQuiz(){
+  qIdx=0;score=0;total=0;answered=false;wrongQuestions=[];
+  const words = WORDS[curKey];
+  if(curStep===1) questions = buildQ1(words);
+  else if(curStep===2) questions = buildQ4(words);
+  else if(curStep===3){
+    s5questions = buildS5Questions(words);
+    s5qIdx = 0; s5score = 0;
+    initS5question();
+    renderS5(document.getElementById('quizArea'));
+    return;
+  }
+  renderQuiz();
+}
+
+// ── Step 1: 한글 뜻 맞추기 ──
+function buildQ1(words){
+  return shuffle(words).map(item=>{
+    const wrongs=shuffle(words.filter(w=>w.w!==item.w)).slice(0,3).map(w=>w.m);
+    return{word:item.w, answer:item.m, options:shuffle([item.m,...wrongs])};
+  });
+}
+
+// ── Step 2: 영영풀이 보고 단어 찾기 ──
+function buildQ2(words){
+  return shuffle(words).map(item=>{
+    const wrongs=shuffle(words.filter(w=>w.w!==item.w)).slice(0,3).map(w=>w.w);
+    return{def:item.d, answer:item.w, meaning:item.m, options:shuffle([item.w,...wrongs])};
+  });
+}
+
+// ── Step 4: 예문 빈칸 채우기 ──
+function buildQ4(words){
+  return shuffle(words.filter(w=>w.s.includes("_____"))).map(item=>{
+    const wrongs=shuffle(words.filter(w=>w.w!==item.w)).slice(0,3).map(w=>w.w);
+    return{sentence:item.s, answer:item.w, meaning:item.m, options:shuffle([item.w,...wrongs])};
+  });
+}
+
+// ── 공통 렌더 ──
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  if(qIdx>=questions.length){renderResult(area);return;}
+  const q = questions[qIdx];
+  const nums=['①','②','③','④'];
+
+  let bodyHtml='';
+  if(curStep===1){
+    bodyHtml=`<div class="q-word tts-word" onclick="speak('${q.word.replace(/'/g,"\\'")}')" title="클릭하면 발음이 나옵니다">🔊 ${q.word}</div>`;
+  } else if(curStep===2){
+    const sentHtml=q.sentence.replace('_____','<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+    bodyHtml=`<div class="q-sent">${sentHtml}</div>`;
+  }
+
+  area.innerHTML=`
+    <div class="score-bar">
+      <span>문제 ${qIdx+1} / ${questions.length}</span>
+      <span class="snum">맞은 수 ${score} / ${total}</span>
+    </div>
+    <div class="q-card">
+      <div class="q-label">${
+        curStep===1?'이 단어의 한글 뜻은? (단어를 클릭하면 발음이 나옵니다)':
+        '빈칸에 알맞은 단어를 고르시오.'
+      }</div>
+      ${bodyHtml}
+      <div class="opts" id="opts">
+        ${q.options.map((o,i)=>`<button class="opt-btn" id="ob${i}" onclick="speakOpt('${o.replace(/'/g,"\\'")}');checkAns(${i})">
+          <span class="opt-num">${nums[i]}</span>${o}
+        </button>`).join('')}
+      </div>
+    </div>
+    <div class="feedback-fixed" id="fb">
+      <div class="fb-placeholder"></div>
+      <button class="btn-confirm" id="confirmBtn" onclick="nextQ()" style="display:none">확인 →</button>
+    </div>`;
+}
+
+function checkAns(i){
+  if(answered)return;
+  answered=true;total++;
+  const q=questions[qIdx];
+  const ok=q.options[i]===q.answer;
+  if(ok)score++;
+  else wrongQuestions.push(q);
+  document.querySelectorAll('.opt-btn').forEach((b,j)=>{
+    b.disabled=true;
+    if(q.options[j]===q.answer)b.classList.add('correct');
+    else if(j===i&&!ok)b.classList.add('wrong');
+  });
+  // Step 1: 정답 단어 TTS 자동 재생
+  if(curStep===1) speak(q.word);
+  // Step 2: 정답 단어 TTS 자동 재생
+  if(curStep===2) speak(q.answer);
+  const fb=document.getElementById('fb');
+  fb.className=`feedback-fixed ${ok?'fb-ok':'fb-ng'}`;
+  fb.innerHTML=`
+    <span class="fb-msg">${ok?'✓ 정답입니다!':'✗ 오답 — 정답: <b>'+q.answer+'</b>'}</span>
+    <button class="btn-confirm" onclick="nextQ()">확인 →</button>`;
+}
+
+function nextQ(){qIdx++;answered=false;renderQuiz();}
+
+function renderResult(area){
+  const pct=total?Math.round(score/total*100):0;
+  const msg=pct>=90?'완벽합니다! 🎉':pct>=70?'잘 했어요! 👍':pct>=50?'조금 더 연습해요.':'다시 도전해 보세요! 💪';
+  const hasFailed = wrongQuestions.length > 0;
+  area.innerHTML=`<div class="result-box">
+    <div style="font-size:14px;color:#b07090;margin-bottom:4px">학습 완료</div>
+    <div class="result-score" style="color:#e84040">${score} / ${total}</div>
+    <div class="result-pct">${pct}점</div>
+    <div class="result-msg">${msg}</div>
+    <div class="result-btns">
+      <button class="btn result-btn btn-retry-wrong" onclick="retryWrong()" ${!hasFailed?'disabled':''}>
+        틀린 문제 다시 풀기 ${hasFailed?'('+wrongQuestions.length+'개)':'(없음)'}
+      </button>
+      <button class="btn result-btn btn-retry-all" onclick="initQuiz()">전체 문제 다시 풀기</button>
+      <button class="btn result-btn btn-main" onclick="goMain()">메인으로 돌아가기</button>
+    </div>
+  </div>`;
+}
+
+function retryWrong(){
+  questions=shuffle([...wrongQuestions]);
+  wrongQuestions=[];
+  qIdx=0;score=0;total=0;answered=false;
+  renderQuiz();
+}
+function initMatch(words){
+  const picked = shuffle(words).slice(0,6);
+  const leftItems = shuffle(picked).map(p=>({word:p.w,matched:false}));
+  const rightItems = shuffle(picked).map(p=>({def:p.d,word:p.w,matched:false}));
+  matchState={leftItems,rightItems,selLeft:null,selRight:null,pairs:0,total:picked.length,errors:0};
+}
+
+function renderMatch(area){
+  const ms=matchState;
+  area.innerHTML=`
+    <div class="score-bar">
+      <span>짝 맞추기 (${ms.pairs}/${ms.total} 완료)</span>
+      <span class="snum">오답 ${ms.errors}회</span>
+    </div>
+    <div class="q-card">
+      <div class="q-label">단어와 영영풀이를 짝지어 보세요.</div>
+      <div class="match-area">
+        <div>
+          <div class="match-col-title">WORD</div>
+          <div class="match-col" id="matchLeft">
+            ${ms.leftItems.map((item,i)=>{
+              let cls='match-item';
+              if(item.matched)cls+=' matched-ok disabled-item';
+              else if(ms.selLeft===i)cls+=' selected';
+              return`<button class="${cls}" onclick="selectLeft(${i})" ${item.matched?'disabled':''}>${item.word}</button>`;
+            }).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="match-col-title">DEFINITION</div>
+          <div class="match-col" id="matchRight">
+            ${ms.rightItems.map((item,i)=>{
+              let cls='match-item';
+              if(item.matched)cls+=' matched-ok disabled-item';
+              else if(ms.selRight===i)cls+=' selected';
+              return`<button class="${cls}" onclick="selectRight(${i})" ${item.matched?'disabled':''}>${item.def}</button>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+      <div id="fb3"></div>
+    </div>`;
+  if(ms.pairs===ms.total){
+    area.innerHTML+=`<div class="result-box">
+      <div class="result-score" style="color:#28a060">완성!</div>
+      <div class="result-pct">오답 ${ms.errors}회</div>
+      <div class="result-msg">${ms.errors===0?'실수 없이 완벽합니다! 🎉':ms.errors<=3?'잘 했어요! 👍':'조금 더 연습해요.'}</div>
+      <div class="nav-row" style="justify-content:center;gap:12px">
+        <button class="btn primary-green" onclick="initQuiz()">다시 풀기</button>
+        <button class="btn" onclick="goMain()">메인으로</button>
+      </div>
+    </div>`;
+  }
+}
+
+function selectLeft(i){
+  if(matchState.leftItems[i].matched)return;
+  matchState.selLeft=i;
+  tryMatch();
+}
+
+function selectRight(i){
+  if(matchState.rightItems[i].matched)return;
+  matchState.selRight=i;
+  tryMatch();
+}
+
+function tryMatch(){
+  const ms=matchState;
+  if(ms.selLeft===null||ms.selRight===null)return renderMatch(document.getElementById('quizArea'));
+  const lw=ms.leftItems[ms.selLeft].word;
+  const rw=ms.rightItems[ms.selRight].word;
+  if(lw===rw){
+    ms.leftItems[ms.selLeft].matched=true;
+    ms.rightItems[ms.selRight].matched=true;
+    ms.pairs++;
+    ms.selLeft=null;ms.selRight=null;
+    renderMatch(document.getElementById('quizArea'));
+  } else {
+    ms.errors++;
+    renderMatch(document.getElementById('quizArea'));
+    document.getElementById('fb3').innerHTML='<div class="feedback ng">✗ 짝이 맞지 않습니다. 다시 시도해 보세요.</div>';
+    setTimeout(()=>{
+      ms.selLeft=null;ms.selRight=null;
+      renderMatch(document.getElementById('quizArea'));
+    },800);
+  }
+}
+
+// ── Step 3: 실전문제 (다문제, 클릭으로 채우기) ──
+function initS5question(){
+  s5state={
+    filled: new Array(s5questions[s5qIdx].sents.length).fill(null),
+    submitted: false,
+    correct: null,
+    wrongIdx: -1
+  };
+}
+
+function renderS5(area){
+  if(s5qIdx >= s5questions.length){ renderS5Result(area); return; }
+  const d = s5questions[s5qIdx];
+  const st = s5state;
+  const nums = ['①','②','③','④','⑤'];
+
+  const passHtml = d.sents.map((s,i)=>{
+    const filled = st.filled[i];
+    let blankHtml;
+    if(st.submitted && filled){
+      const correct = (filled === d.answers[i]);
+      blankHtml = `<span class="s5-blank filled ${correct?'blank-ok':'blank-ng'}">${filled}</span>`;
+    } else if(filled){
+      blankHtml = `<span class="s5-blank filled" onclick="removeFromBlank(${i})">${filled}</span>`;
+    } else {
+      blankHtml = `<span class="s5-blank s5-drop-zone"></span>`;
+    }
+    return `<div class="s-row">· ${s.replace('_____', blankHtml)}</div>`;
+  }).join('');
+
+  const usedWords = st.filled.filter(f=>f!==null);
+  const optsHtml = d.options.map((o,i)=>{
+    const isUsed = usedWords.includes(o);
+    let cls = 's5-chip';
+    if(isUsed) cls += ' chip-used';
+    if(st.submitted){
+      if(o === d.wrongAnswer) cls += ' chip-correct';
+      else if(i === st.wrongIdx) cls += ' chip-wrong';
+    }
+    const clickable = !isUsed && !st.submitted;
+    return `<span class="${cls}" ${clickable?`onclick="clickChip('${o.replace(/'/g,"\\'")}')"`:''}>
+      ${nums[i]} ${o}</span>`;
+  }).join('');
+
+  const allFilled = st.filled.every(f=>f!==null);
+  let actionHtml = '';
+
+  if(!st.submitted){
+    actionHtml = `<div class="nav-row">
+      <button class="btn btn-score" onclick="submitS5()" ${!allFilled?'disabled':''}>채점하기</button>
+    </div>`;
+  } else {
+    const unusedWord = d.options[st.wrongIdx];
+    const isCorrect = st.correct;
+    const wrongSents = d.sents.map((s,i)=>{
+      if(st.filled[i] === d.answers[i]) return null;
+      return `<div class="explain-row">· ${s.replace('_____',`<b class="ans-word">${d.answers[i]}</b>`)}</div>`;
+    }).filter(Boolean).join('');
+
+    const isLast = (s5qIdx >= s5questions.length - 1);
+    actionHtml = `
+      <div class="score-result ${isCorrect?'score-ok':'score-ng'}">
+        <div class="result-chip ${isCorrect?'chip-ok':'chip-ng'}">${isCorrect?'✓ 정답':'✗ 오답'}</div>
+        <p class="score-main">빈칸에 들어가지 않는 단어: <b>"${d.wrongAnswer}"</b></p>
+        ${!isCorrect?`<p class="score-sub">선택한 단어 <b>"${unusedWord}"</b>은(는) 빈칸에 들어가는 단어입니다.</p>`:''}
+      </div>
+      ${wrongSents?`<div class="explain-box">
+        <div class="explain-title">📝 해설 — 올바른 문장</div>
+        ${wrongSents}
+      </div>`:''}
+      <div class="nav-row" style="gap:10px;margin-top:12px">
+        <button class="btn btn-score" onclick="nextS5()">${isLast?'결과 보기':'다음 문제 →'}</button>
+      </div>`;
+  }
+
+  area.innerHTML = `
+    <div class="score-bar">
+      <span>문제 ${s5qIdx+1} / ${s5questions.length}</span>
+      <span class="snum">맞은 수 ${s5score} / ${s5qIdx+(st.submitted?1:0)}</span>
+    </div>
+    <div class="q-card">
+      <div class="q-label">다음 단어 중 빈칸에 들어가지 않는 것은?</div>
+      <div class="s5-passage">${passHtml}</div>
+      <div class="s5-hint">단어를 클릭하면 순서대로 채워집니다. 채워진 단어를 클릭하면 다시 빠집니다.</div>
+      <div class="s5-chips">${optsHtml}</div>
+      ${actionHtml}
+    </div>`;
+}
+
+function renderS5Result(area){
+  const total = s5questions.length;
+  const pct = Math.round(s5score/total*100);
+  const msg = pct>=90?'완벽합니다! 🎉':pct>=70?'잘 했어요! 👍':pct>=50?'조금 더 연습해요.':'다시 도전해 보세요! 💪';
+  area.innerHTML = `<div class="result-box">
+    <div style="font-size:14px;color:#b07090;margin-bottom:4px">실전문제 완료</div>
+    <div class="result-score" style="color:#8040c0">${s5score} / ${total}</div>
+    <div class="result-pct">${pct}점</div>
+    <div class="result-msg">${msg}</div>
+    <div class="result-btns">
+      <button class="btn result-btn btn-retry-all" onclick="initQuiz()">전체 문제 다시 풀기</button>
+      <button class="btn result-btn btn-main" onclick="goMain()">메인으로 돌아가기</button>
+    </div>
+  </div>`;
+}
+
+function speakOpt(word){
+  // Step 2에서만 선택지 단어를 읽음 (Step 1은 한글 뜻이므로 제외)
+  if(curStep===2) speak(word);
+}
+
+function clickChip(word){
+  speak(word);
+  if(s5state.submitted) return;
+  const emptyIdx = s5state.filled.findIndex(f=>f===null);
+  if(emptyIdx===-1) return;
+  s5state.filled[emptyIdx] = word;
+  renderS5(document.getElementById('quizArea'));
+}
+
+function removeFromBlank(idx){
+  if(s5state.submitted) return;
+  s5state.filled[idx] = null;
+  renderS5(document.getElementById('quizArea'));
+}
+
+function submitS5(){
+  const d = s5questions[s5qIdx]; const st = s5state;
+  const usedWords = st.filled.filter(f=>f!==null);
+  const unusedOpt = d.options.find(o=>!usedWords.includes(o));
+  const unusedIdx = d.options.indexOf(unusedOpt);
+  st.submitted = true;
+  st.correct = (unusedOpt === d.wrongAnswer);
+  st.wrongIdx = unusedIdx;
+  if(st.correct) s5score++;
+  renderS5(document.getElementById('quizArea'));
+}
+
+function nextS5(){
+  s5qIdx++;
+  if(s5qIdx < s5questions.length) initS5question();
+  renderS5(document.getElementById('quizArea'));
+}
+
+// ── 초기 렌더 ──
+renderSetGrid();
+renderStepRows();
+document.getElementById('quizScreen').style.display='none';
+</script>
+</body>
+</html>
